@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null && request.auth.token.email != null; }
+    function myId() { return request.auth.token.email.split('@')[0].split('\\.')[0]; }
+    function dp(path) { return /databases/$(database)/documents/$(path); }
+    function admins() { return get(dp('config/main')).data.admins; }
+    function isMember() {
+      return signedIn() && exists(dp('members/' + myId()))
+        && !('deletedAt' in get(dp('members/' + myId())).data && get(dp('members/' + myId())).data.deletedAt != null);
+    }
+    function isDev() { return signedIn() && myId() == 'admin-adminski'; }
+    function isAdmin() { return isMember() && (myId() == 'admin-adminski' || myId() in admins()); }
+
+    // Konfiguration: Version/Salz/Admin-Liste sind nicht geheim (Anmeldung braucht sie vor dem Login)
+    match /config/main {
+      allow read: if true;
+      allow create: if signedIn() && myId() == 'admin-adminski' && !exists(dp('config/main'));
+      allow update, delete: if isAdmin();
+    }
+    // Geschäftspasswort (nur als Prüfwert, nur Admins lesen/schreiben)
+    match /config/biz {
+      allow read, write: if isAdmin() || (isDev() && !exists(dp('config/biz')));
+    }
+    match /config/flags { allow read: if isMember(); allow write: if isDev(); }
+    match /config/dev { allow read: if isMember(); allow write: if isDev(); }
+
+    // Registrierung: Prüfwert des Geschäftspassworts wird serverseitig verglichen
+    match /reg/{id} {
+      allow create: if signedIn() && id == myId() && request.resource.data.key == get(dp('config/biz')).data.key;
+      allow delete: if signedIn() && id == myId();
+    }
+    // Zähler für Passwort-Reset (Admin); lesbar vor dem Login
+    match /gens/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /members/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && id == myId() && (
+        (exists(dp('reg/' + id)) && (request.resource.data.role == 'staff' || id in admins()))
+        || (id == 'admin-adminski' && !exists(dp('config/main'))));
+      allow update: if isAdmin() || (signedIn() && id == myId() && (
+        request.resource.data.role == resource.data.role
+        || request.resource.data.role == 'staff'
+        || id in admins()));
+      allow delete: if isAdmin() || (signedIn() && id == myId());
+    }
+
+    match /shifts/{sid} {
+      allow read: if isAdmin() || (isMember() && resource.data.uid == myId());
+      allow create: if isMember() && request.resource.data.uid == myId();
+      allow update: if isAdmin() || (isMember() && resource.data.uid == myId());
+      allow delete: if isAdmin();
+    }
+    match /audit/{aid} {
+      allow read: if isAdmin();
+      allow create: if isMember();
+    }
+    // Wiederherstellungs-Anfragen darf auch ein (gelöschtes) Konto stellen
+    match /requests/{rid} {
+      allow get: if signedIn();
+      allow list: if isMember();
+      allow create: if signedIn();
+      allow update, delete: if signedIn();
+    }
+    match /{coll}/{docId} {
+      allow read, write: if isMember() && coll in ['notes','tasks','reports','recipes','rgroups','rules','checklists','checks','plan','offs','stock','tdev','temps','devmsgs','layout'];
+    }
+  }
+}
