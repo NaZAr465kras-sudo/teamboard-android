@@ -36,7 +36,7 @@ service cloud.firestore {
     }
 
     match /members/{id} {
-      allow read: if signedIn();
+      allow read: if isMember() || (signedIn() && id == myId());
       allow create: if signedIn() && id == myId() && (
         (exists(/databases/$(database)/documents/reg/$(id)) && (request.resource.data.role == 'staff' || id in admins()))
         || (id == 'admin-adminski' && !exists(/databases/$(database)/documents/config/main)));
@@ -50,7 +50,7 @@ service cloud.firestore {
     match /shifts/{sid} {
       allow read: if isAdmin() || (isMember() && resource.data.uid == myId());
       allow create: if isMember() && request.resource.data.uid == myId();
-      allow update: if isAdmin() || (isMember() && resource.data.uid == myId());
+      allow update: if isAdmin() || (isMember() && resource.data.uid == myId() && request.resource.data.uid == resource.data.uid);
       allow delete: if isAdmin();
     }
     match /audit/{aid} {
@@ -59,13 +59,17 @@ service cloud.firestore {
     }
     // Wiederherstellungs-Anfragen darf auch ein (gelöschtes) Konto stellen
     match /requests/{rid} {
-      allow get: if signedIn();
+      allow get: if isMember() || (signedIn() && resource.data.uid == myId());
       allow list: if isMember();
-      allow create: if signedIn();
-      allow update, delete: if signedIn();
+      allow create: if isMember() || (signedIn() && request.resource.data.uid == myId() && request.resource.data.type == 'restore');
+      allow update, delete: if isMember() || (signedIn() && resource.data.uid == myId());
+    }
+    match /layout/{lid} {
+      allow read: if isMember();
+      allow write: if isAdmin();
     }
     match /{coll}/{docId} {
-      allow read, write: if isMember() && coll in ['notes','tasks','reports','recipes','rgroups','rules','checklists','checks','plan','offs','stock','tdev','temps','devmsgs','layout'];
+      allow read, write: if isMember() && coll in ['notes','tasks','reports','recipes','rgroups','rules','checklists','checks','plan','offs','stock','tdev','temps','devmsgs'];
     }
   }
 }
