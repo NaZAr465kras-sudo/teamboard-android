@@ -11,7 +11,7 @@ android {
         applicationId = "de.teamboard.app"
         minSdk = 24
         targetSdk = 34
-        versionCode = 39
+        versionCode = 40
         versionName = "0.39.012f"
     }
     buildTypes {
@@ -27,5 +27,4 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.browser:browser:1.8.0")
-}
+    }
