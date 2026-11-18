@@ -11,10 +11,19 @@ android {
         applicationId = "de.teamboard.app"
         minSdk = 24
         targetSdk = 34
-        versionCode = 40
+        versionCode = 41
         versionName = "0.39.012f"
     }
+    signingConfigs {
+        create("fixed") {
+            storeFile = file("keystore/teamboard.jks")
+            storePassword = "teamboard"
+            keyAlias = "teamboard"
+            keyPassword = "teamboard"
+        }
+    }
     buildTypes {
+        debug { signingConfig = signingConfigs.getByName("fixed") }
         release { isMinifyEnabled = false }
     }
     compileOptions {
