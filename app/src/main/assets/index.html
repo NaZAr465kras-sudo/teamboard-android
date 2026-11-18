@@ -407,12 +407,12 @@ async function register(first,last,pw,biz){first=first.trim().slice(0,30);last=l
  try{await DB.collection("members").doc(id).set({name,first,last,role:ad?"admin":"staff",ts:Date.now(),lastSeen:Date.now(),onShift:false,shiftTs:0})}catch(e){DB.collection("reg").doc(id).delete().catch(()=>{});return toast("Registrierung nicht möglich: "+((e&&(e.code||e.message))||""))}
  DB.collection("reg").doc(id).delete().catch(()=>{});enter(id,name,ad)}
 async function setup(ap,bp){if(ap.length<4||bp.length<4)return toast("Beide Passwörter: mindestens 4 Zeichen");if(ap===bp)return toast("Die Passwörter müssen verschieden sein");
- const salt=nid()+nid(),d={salt,ver:1,admins:[]};
+ let step="Anmeldung";const salt=nid()+nid(),d={salt,ver:1,admins:[]};
  try{await FA.signOut().catch(()=>{});const em=fbEmail(ADM,0),pp=await fbp(ADM,ap);
   try{await FA.createUserWithEmailAndPassword(em,pp)}catch(e){if(e&&e.code==="auth/email-already-in-use")await FA.signInWithEmailAndPassword(em,pp);else throw e}
-  await DB.collection("members").doc(ADM).set({name:"ADMIN ADMINSKI",first:"ADMIN",last:"ADMINSKI",role:"admin",ts:Date.now(),lastSeen:Date.now(),onShift:false,shiftTs:0});
-  await DB.collection("config").doc("main").set(d);C=d;await DB.collection("config").doc("biz").set({key:await bizH(bp)});enter(ADM,"ADMIN ADMINSKI",true)}
- catch(e){toast("Einrichtung fehlgeschlagen: "+((e&&(e.code||e.message))||""))}}
+  step="Admin-Eintrag";await DB.collection("members").doc(ADM).set({name:"ADMIN ADMINSKI",first:"ADMIN",last:"ADMINSKI",role:"admin",ts:Date.now(),lastSeen:Date.now(),onShift:false,shiftTs:0});
+  step="Konfiguration";await DB.collection("config").doc("main").set(d);C=d;step="Geschäftspasswort";await DB.collection("config").doc("biz").set({key:await bizH(bp)});enter(ADM,"ADMIN ADMINSKI",true)}
+ catch(e){toast("Einrichtung fehlgeschlagen ("+step+"): "+((e&&(e.code||e.message))||""))}}
 async function setBiz(p){if(p.length<4)return toast("Mindestens 4 Zeichen");try{await DB.collection("config").doc("biz").set({key:await bizH(p)});logA("Geschäftspasswort geändert");toast("Geschäftspasswort geändert")}catch(e){toast("Nicht erlaubt (Admin-Rechte nötig)")}}
 async function setPass(id,p){if(!id)return toast("Mitarbeiter wählen");if(id===ADM)return toast("Dieses Passwort kann nur der Entwickler selbst ändern");
  try{const g=await gen(id);await DB.collection("gens").doc(id).set({g:g+1,ts:Date.now()});await DB.collection("members").doc(id).delete();logA("Passwort zurückgesetzt (Neu-Registrierung): "+id);toast("Fertig – der Mitarbeiter registriert sich mit demselben Namen neu und wählt ein neues Passwort")}catch(e){toast("Speichern nicht möglich")}}
