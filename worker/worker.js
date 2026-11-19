@@ -129,7 +129,10 @@ function gschema(x) {
   for (const k in x) if (!["additionalProperties", "$schema", "$id", "definitions", "$defs", "default", "examples"].includes(k)) o[k] = gschema(x[k]);
   return o;
 }
+// Schluessel kann ein normales Secret (Text) oder eine Secrets-Store-Bindung (mit .get()) sein
+async function secret(v) { return v && typeof v === "object" && typeof v.get === "function" ? await v.get() : v; }
 async function gemini(env, body) {
+  const gkey = await secret(env.GEMINI_API_KEY);
   const contents = body.messages.map((m) => {
     const parts = [];
     if (typeof m.content === "string") parts.push({ text: m.content || "(leer)" });
@@ -144,7 +147,7 @@ async function gemini(env, body) {
   const req = { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { maxOutputTokens: body.max_tokens } };
   if (body.tools) req.tools = [{ functionDeclarations: body.tools.map((t) => ({ name: t.name, description: t.description || t.name, parameters: gschema(t.input_schema) })) }];
   const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL + ":generateContent", {
-    method: "POST", headers: { "x-goog-api-key": env.GEMINI_API_KEY, "content-type": "application/json" }, body: JSON.stringify(req),
+    method: "POST", headers: { "x-goog-api-key": gkey, "content-type": "application/json" }, body: JSON.stringify(req),
   });
   if (r.status === 429) throw Object.assign(new Error("rate"), { status: 429 });
   if (!r.ok) throw new Error("gemini " + r.status);
@@ -186,7 +189,7 @@ export default {
     }
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      headers: { "x-api-key": await secret(env.ANTHROPIC_API_KEY), "anthropic-version": "2023-06-01", "content-type": "application/json" },
       body: JSON.stringify(body),
     });
     const text = await r.text();
