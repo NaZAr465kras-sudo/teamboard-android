@@ -31,7 +31,8 @@ service cloud.firestore {
     }
     // Zähler für Passwort-Reset (Admin); lesbar vor dem Login
     match /gens/{id} {
-      allow read: if true;
+      allow get: if true;
+      allow list: if isAdmin();
       allow write: if isAdmin();
     }
 
