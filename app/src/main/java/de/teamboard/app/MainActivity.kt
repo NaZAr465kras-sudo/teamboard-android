@@ -18,6 +18,8 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -26,6 +28,7 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -41,6 +44,25 @@ class MainActivity : AppCompatActivity() {
     private lateinit var web: WebView
     private var recognizer: SpeechRecognizer? = null
     private var wantListen = false
+
+    // ---- Foto-Auswahl (Galerie/Kamera) für <input type=file> ----
+    private var fileCb: ValueCallback<Array<Uri>>? = null
+    private var camUri: Uri? = null
+    private val picker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+        val cb = fileCb; fileCb = null
+        var out: Array<Uri>? = null
+        if (res.resultCode == RESULT_OK) {
+            val d = res.data
+            out = when {
+                d?.data != null -> arrayOf(d.data!!)
+                d?.clipData != null && d.clipData!!.itemCount > 0 -> arrayOf(d.clipData!!.getItemAt(0).uri)
+                camUri != null -> arrayOf(camUri!!)
+                else -> null
+            }
+        }
+        camUri = null
+        cb?.onReceiveValue(out)
+    }
 
     private fun js(type: String, text: String) {
         val a = JSONObject.quote(type)
@@ -147,6 +169,37 @@ class MainActivity : AppCompatActivity() {
             .setDomain(HOST)
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
             .build()
+
+        web.webChromeClient = object : WebChromeClient() {
+            override fun onShowFileChooser(v: WebView, cb: ValueCallback<Array<Uri>>, p: FileChooserParams): Boolean {
+                fileCb?.onReceiveValue(null)
+                fileCb = cb
+                try {
+                    val pick = Intent(Intent.ACTION_GET_CONTENT).apply {
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                        type = "image/*"
+                    }
+                    val extra = mutableListOf<Intent>()
+                    try {
+                        val dir = File(cacheDir, "photos").apply { mkdirs() }
+                        val f = File(dir, "p" + System.currentTimeMillis() + ".jpg")
+                        val u = FileProvider.getUriForFile(this@MainActivity, "$packageName.fileprovider", f)
+                        camUri = u
+                        extra.add(Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                            putExtra(MediaStore.EXTRA_OUTPUT, u)
+                            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                        })
+                    } catch (_: Exception) {}
+                    val ch = Intent.createChooser(pick, "Foto").putExtra(Intent.EXTRA_INITIAL_INTENTS, extra.toTypedArray())
+                    picker.launch(ch)
+                } catch (e: Exception) {
+                    fileCb = null
+                    cb.onReceiveValue(null)
+                    return false
+                }
+                return true
+            }
+        }
 
         web.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(v: WebView, r: WebResourceRequest): WebResourceResponse? =
