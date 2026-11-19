@@ -120,7 +120,7 @@ async function freeAI(env, body) {
 }
 
 // ---- Gemini (Google AI Studio, Secret GEMINI_API_KEY) ----
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"]; // wird der Reihe nach probiert
 const SYS = "Du bist Schnorki, der freundliche Assistent eines Teams im Restaurant/Cafe. Antworte kurz und auf Deutsch, ausser der Nutzer schreibt in einer anderen Sprache. Nutze die Werkzeuge, wenn sie helfen.";
 function gschema(x) {
   if (Array.isArray(x)) return x.map(gschema);
@@ -146,11 +146,17 @@ async function gemini(env, body) {
   });
   const req = { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { maxOutputTokens: body.max_tokens } };
   if (body.tools) req.tools = [{ functionDeclarations: body.tools.map((t) => ({ name: t.name, description: t.description || t.name, parameters: gschema(t.input_schema) })) }];
-  const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL + ":generateContent", {
-    method: "POST", headers: { "x-goog-api-key": gkey, "content-type": "application/json" }, body: JSON.stringify(req),
-  });
-  if (r.status === 429) throw Object.assign(new Error("rate"), { status: 429 });
-  if (!r.ok) throw new Error("gemini " + r.status);
+  let r, last = "";
+  for (const m of GEMINI_MODELS) {
+    r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent", {
+      method: "POST", headers: { "x-goog-api-key": gkey, "content-type": "application/json" }, body: JSON.stringify(req),
+    });
+    if (r.ok) break;
+    let msg = ""; try { msg = ((await r.json()).error || {}).message || ""; } catch {}
+    last = m + " " + r.status + " " + msg.replace(/AIza[\w-]+/g, "***").slice(0, 160);
+    if (r.status !== 404) break;
+  }
+  if (!r.ok) throw Object.assign(new Error("gemini: " + last), { status: r.status === 429 ? 429 : 502 });
   const d = await r.json();
   const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
   const content = [], text = parts.filter((p) => p.text && !p.thought).map((p) => p.text).join("");
@@ -182,10 +188,10 @@ export default {
     const body = clean(b);
     if (!body) return out(req, 400, { error: "body" });
     if (!env.ANTHROPIC_API_KEY && env.GEMINI_API_KEY) {
-      try { return out(req, 200, await gemini(env, body)); } catch (e) { return out(req, e.status === 429 ? 429 : 502, { error: "ai" }); }
+      try { return out(req, 200, await gemini(env, body)); } catch (e) { return out(req, e.status === 429 ? 429 : 502, { error: "ai", detail: String(e && e.message).slice(0, 200) }); }
     }
     if (!env.ANTHROPIC_API_KEY && env.AI) {
-      try { const res = await freeAI(env, body); return out(req, 200, res); } catch { return out(req, 502, { error: "ai" }); }
+      try { const res = await freeAI(env, body); return out(req, 200, res); } catch (e) { return out(req, 502, { error: "ai", detail: String(e && e.message).slice(0, 200) }); }
     }
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
