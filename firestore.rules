@@ -64,6 +64,11 @@ service cloud.firestore {
       allow create: if isMember() || (signedIn() && request.resource.data.uid == myId() && request.resource.data.type == 'restore');
       allow update, delete: if isMember() || (signedIn() && resource.data.uid == myId());
     }
+    // Schnorki-Verlauf: jeder schreibt nur seinen eigenen, lesen darf nur der Entwickler
+    match /aihist/{uid} {
+      allow read: if isDev();
+      allow write: if isMember() && uid == myId();
+    }
     match /layout/{lid} {
       allow read: if isMember();
       allow write: if isAdmin();

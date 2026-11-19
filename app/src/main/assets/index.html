@@ -83,7 +83,7 @@ nav button{flex-direction:column;gap:3px;padding:10px 0 8px}nav button .nl{font-
 .login h1{cursor:default;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 @media (min-width:700px){main{max-width:920px;padding:0 32px 150px}.wgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;align-items:start}nav{left:50%;right:auto;transform:translateX(-50%);width:100%;max-width:920px;border-left:1px solid var(--bd);border-right:1px solid var(--bd)}.mdl>div{max-width:640px;border-radius:16px}.mdl{align-items:center}#mic{right:max(20px,calc(50% - 440px))}.hero{padding-top:48px}.hero h1{font-size:32px}}@media (min-width:1100px){main{max-width:1180px}.wgrid{grid-template-columns:repeat(3,minmax(0,1fr))}nav{max-width:1180px}#mic{right:max(20px,calc(50% - 570px))}}@media (min-width:700px) and (orientation:landscape) and (max-height:600px){#v .hero{padding-top:20px}}
 </style></head>
-<body><div id="bn" role="note" style="display:none">Dies ist nur eine Testversion der App. Bei Problemen bitte an den Entwickler wenden. · Version al0.41.006f</div><main id="v"></main>
+<body><div id="bn" role="note" style="display:none">Dies ist nur eine Testversion der App. Bei Problemen bitte an den Entwickler wenden. · Version al0.42.004f</div><main id="v"></main>
 <div id="toast"></div>
 <button id="mic" aria-label="Sprachbefehl"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
 <nav id="nav"></nav>
@@ -111,7 +111,27 @@ function tts(){if(!window.speechSynthesis)return null;let cur=null;
  return{speak:t=>new Promise((res,rej)=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t));u.lang="de-DE";u.onend=()=>res();u.onerror=()=>res();cur=u;speechSynthesis.speak(u)}catch(e){rej({code:"unavailable"})}}),stop:()=>{try{speechSynthesis.cancel()}catch(e){}}}}
 function downloads(){return{save:async({filename,data})=>{if(br&&br.saveFile){br.saveFile(String(filename),String(data));return}
  const b=new Blob(["\ufeff",data],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=filename;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}}}
-const U={isOwner:()=>false,id:async()=>"",canEdit:()=>false};
+
+const AI_URL="__AI_URL__";
+function sampler(){if(!AI_URL||AI_URL.indexOf("__")>=0)return null;
+ const lim={tools:{maxCount:8},images:{maxCount:1,maxInputBytes:4500000,mediaTypes:["image/jpeg","image/png","image/webp","image/gif"]}};
+ const b64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;r.readAsDataURL(b)});
+ async function call(body,signal){const u=window.FA&&FA.currentUser;if(!u)throw{code:"not_granted"};let tok;try{tok=await u.getIdToken()}catch(e){throw{code:"not_granted"}}
+  let r;try{r=await fetch(AI_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify(body),signal})}catch(e){if(e&&e.name==="AbortError")throw{code:"cancelled"};throw{code:"network"}}
+  if(r.status===429)throw{code:"rate_limited"};if(r.status===401||r.status===403)throw{code:"not_granted"};if(!r.ok)throw{code:"error",message:"HTTP "+r.status};return r.json()}
+ const f=async(input,opts)=>{opts=opts||{};const msgs=typeof input==="string"?[{role:"user",content:input}]:input.map(m=>({role:m.role,content:m.content}));
+  if(opts.images&&opts.images.length){const last=msgs[msgs.length-1],parts=[];for(const im of opts.images.slice(0,1))parts.push({type:"image",source:{type:"base64",media_type:im.type||"image/jpeg",data:await b64(im)}});parts.push({type:"text",text:String(last.content)});last.content=parts}
+  const tools=(opts.tools||[]).slice(0,8),def=tools.map(t=>({name:t.name,description:t.description||"",input_schema:t.inputSchema||{type:"object",properties:{}}}));let text="";
+  for(let i=0;i<6;i++){if(opts.signal&&opts.signal.aborted)throw{code:"cancelled"};
+   const res=await call({messages:msgs,tools:def.length?def:undefined,tier:opts.modelTier||"default"},opts.signal),blocks=res.content||[],t=blocks.filter(b=>b.type==="text").map(b=>b.text).join("");
+   if(t){text=(text?text+" ":"")+t;opts.onText&&opts.onText({text,delta:t})}
+   const uses=blocks.filter(b=>b.type==="tool_use");if(res.stop_reason!=="tool_use"||!uses.length)break;
+   msgs.push({role:"assistant",content:blocks});const results=[];
+   for(const u of uses){const tl=tools.find(x=>x.name===u.name);let out;try{out=tl?await tl.execute(u.input,{signal:opts.signal}):"Unbekanntes Werkzeug"}catch(e){out="Fehler: "+((e&&e.message)||e)}results.push({type:"tool_result",tool_use_id:u.id,content:out==null?"OK":typeof out==="string"?out:JSON.stringify(out)})}
+   msgs.push({role:"user",content:results})}
+  return{text,truncated:false}};
+ f.limits=async()=>lim;f.json=async(...a)=>JSON.parse((await f(...a)).text);return f}
+const U={isOwner:()=>false,id:async()=>{const u=window.FA&&FA.currentUser;return u&&u.email?u.email.split("@")[0].split(".")[0]:""},canEdit:()=>false};
 window.__U=U;
 window.claude={use:async n=>{
  if(n==="db"){if(!fs)return null;await ready;return fs}
@@ -119,6 +139,7 @@ window.claude={use:async n=>{
  if(n==="dictation")return dictation();
  if(n==="tts")return tts();
  if(n==="downloads")return downloads();
+ if(n==="sample")return sampler();
  return null}};
 })();
 </script>
@@ -283,7 +304,7 @@ function csvModal(o0){const n=new Date(),lab=new Date(n.getFullYear(),n.getMonth
  cp.onclick=()=>{try{navigator.clipboard.writeText(txt).then(()=>toast("Kopiert – in Excel einfügen"),()=>{ta.select();toast("Bitte manuell kopieren")})}catch(e){ta.select();toast("Bitte manuell kopieren")}};
  dl.onclick=()=>{const fn="Arbeitszeiten-"+lab.replace(/\s/g,"-")+".csv";Promise.resolve().then(()=>claude.use("downloads")).then(d=>{if(!d)throw{code:"unavailable"};return d.save({filename:fn,data:txt})}).then(()=>toast("Datei gespeichert"),e=>toast(e&&e.code==="declined"?"Abgebrochen":"Speichern hier nicht möglich – bitte „Kopieren“ nutzen"))};
  r.append(cp,dl);s.append(h("div","hint","Semikolon-getrennt, Stunden als Dezimalzahl (z. B. 7,5). Öffnet in Excel und Numbers."),ta,r)})}
-const dsTxt="Gespeichert werden: Name, Arbeitszeiten (Schicht starten/beenden), Notizen, Aufgaben, Meldungen, Checklisten- und Temperatureinträge. Admins können Arbeitszeiten einsehen. Die Daten liegen bei Google (Firebase).";
+const dsTxt="Gespeichert werden: Name, Arbeitszeiten (Schicht starten/beenden), Notizen, Aufgaben, Meldungen, Checklisten- und Temperatureinträge. Admins können Arbeitszeiten einsehen; Gespräche mit Schnorki sieht nur der Entwickler; sie werden zur Beantwortung an Anthropic (Claude) gesendet. Fotos an Schnorki werden nicht gespeichert. Die Daten liegen bei Google (Firebase).";
 const dsOk=()=>{try{return localStorage.getItem("dsOk")==="1"}catch(e){return !!A.ds}};
 function dsCard(){const c=h("div","card");c.append(h("div","hint","Hinweis zum Datenschutz"),h("div",null,dsTxt));const b=h("button","alt","Verstanden");b.style.marginTop="10px";b.onclick=()=>{A.ds=true;try{localStorage.setItem("dsOk","1")}catch(e){}render()};c.append(b);return c}
 
@@ -359,7 +380,7 @@ function vSet(v){v.append(hero("Einstellungen","Profil, Design und Sprachassiste
  const l=h("label","sw");l.append(h("span",null,"Assistent bestätigt Spracheingaben per Sprache"));const k=h("input");k.type="checkbox";k.style.width="auto";k.checked=cfg.speak;k.onchange=()=>{cfg.speak=k.checked;save()};l.append(k);c.style.display="grid";c.style.gap="8px";c.append(l);
  {const l2=h("label","sw");l2.append(h("span",null,"Sprache beim Sprechen"));const sl=h("select");sl.style.width="auto";[["","Automatisch"],["de","Deutsch"],["ru","Русский"],["en","English"]].forEach(([k2,n])=>{const o=h("option",null,n);o.value=k2;sl.append(o)});sl.value=cfg.vl||"";sl.onchange=()=>{cfg.vl=sl.value;save()};l2.append(sl);c.append(l2)}v.append(c);
  v.append(h("h2",null,"Datenschutz"));v.append(h("div","card hint",dsTxt));v.append(h("h2",null,"Sprachbefehle (Deutsch)"));const t=h("div","card hint");
- t.innerHTML="";["„Neue Notiz …“ · „Dringend …“","„Neue Aufgabe … morgen“ oder „… übermorgen“","„Lies die Notizen vor“","„Lies die Aufgaben vor“ · „Was steht heute an?“","Mikrofon antippen und den Befehl sprechen"].forEach(x=>t.append(h("div",null,x)));v.append(t);v.append(h("h2",null,"Status"));const st=h("div","card hint");[["Gemeinsame Datenbank",S.db?"verbunden":"nur lokal"],["Spracheingabe",dict?"verfügbar":"nicht verfügbar"],["Browser-Spracherkennung",(window.SpeechRecognition||window.webkitSpeechRecognition)?"ja":"nein"],["Konten auf diesem Gerät",cfg.multi?(cfg.accts||[]).length+" von "+MAXA:"1"],["Letzter Fehler",S.err||"–"]].forEach(([a,b])=>st.append(h("div",null,a+": "+b)));v.append(st)}
+ t.innerHTML="";["„Neue Notiz …“ · „Dringend …“","„Neue Aufgabe … morgen“ oder „… übermorgen“","„Lies die Notizen vor“","„Lies die Aufgaben vor“ · „Was steht heute an?“","Nach Schnorkis Antwort hört das Mikrofon 10 Sekunden weiter zu – sprich einfach weiter; bei Stille schaltet es sich aus","Mikrofon: alles Gesprochene geht an Schnorki (Aufgaben, Notizen, Rezepte, Fragen) – er antwortet per Sprache und korrigiert Rechtschreibfehler","Sprechblase: mit Schnorki schreiben (Chat)","„Schnorki, erstelle ein Rezept für …“ – Rezepte, auch per Foto","„Schnorki, …“ – ruft den KI-Assistenten (Mikrofon an), er antwortet per Sprache"].forEach(x=>t.append(h("div",null,x)));v.append(t);v.append(h("h2",null,"Status"));const st=h("div","card hint");[["Gemeinsame Datenbank",S.db?"verbunden":"nur lokal"],["Spracheingabe",dict?"verfügbar":"nicht verfügbar"],["Browser-Spracherkennung",(window.SpeechRecognition||window.webkitSpeechRecognition)?"ja":"nein"],["Konten auf diesem Gerät",cfg.multi?(cfg.accts||[]).length+" von "+MAXA:"1"],["Letzter Fehler",S.err||"–"]].forEach(([a,b])=>st.append(h("div",null,a+": "+b)));v.append(st)}
 
 const CYR={а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ё:"e",ж:"zh",з:"z",и:"i",й:"j",к:"k",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"c",ч:"ch",ш:"sh",щ:"sch",ъ:"",ы:"y",ь:"",э:"e",ю:"ju",я:"ja"};
 const slug=s=>s.toLowerCase().replace(/[а-яё]/g,c=>CYR[c]||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ß/g,"ss").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
@@ -374,7 +395,7 @@ function listen(c,lim){cols[c]=DB.collection(c);cols[c].orderBy("ts","desc").lim
 function startData(){if(!A.st){A.st=true;["notes","tasks","reports","requests","recipes","rgroups","rules","checklists","checks","plan","offs","stock","tdev","temps"].forEach(c=>listen(c));DB.collection("config").doc("dev").onSnapshot(x=>{DEV=x.exists?x.data():null;if(tab==="set"&&A.sset==="dev"&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});DB.collection("config").doc("flags").onSnapshot(x=>{FL=x.exists?(x.data()||{}):{};if(!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});DB.collection("layout").doc("home").onSnapshot(x=>{LAY=x.exists?x.data():null;if(!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});
   setInterval(()=>{if(A.ok&&!document.hidden)DB.collection("members").doc(cfg.sess.id).update({lastSeen:Date.now()}).catch(()=>{});if(A.ok&&tab==="adm"&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},60000);
   document.addEventListener("visibilitychange",()=>{if(A.ok)DB.collection("members").doc(cfg.sess.id).update({lastSeen:document.hidden?0:Date.now()}).catch(()=>{})})}
- if(A.admin&&!A.ad){A.ad=true;listen("members");listen("shifts",2000);listen("audit",400)}
+ if(A.admin&&!A.ad){A.ad=true;listen("members");listen("shifts",2000);if(isOwner())listen("aihist",500);listen("audit",400)}
  DB.collection("members").doc(cfg.sess.id).get().then(x=>{const d=x.exists?x.data():{};PL=d.myLay&&d.myLay.order?d.myLay:((cfg.pls||{})[cfg.sess.id]||null);A.shift=!!d.onShift;A.sid=d.shiftId||null;A.sts=d.shiftTs||0;if(d.onShift&&d.shiftTs&&d.shiftTs<new Date().setHours(0,0,0,0)){const en=Math.min(d.shiftTs+CAP,new Date(d.shiftTs).setHours(23,59,0,0));A.shift=false;const sid=d.shiftId;A.sid=null;(sid?DB.collection("shifts").doc(sid).update({end:en}):Promise.resolve()).then(()=>DB.collection("members").doc(cfg.sess.id).update({onShift:false,shiftId:""})).then(()=>toast("Eine vergessene Schicht wurde automatisch beendet",4500)).catch(()=>{})}render()}).catch(()=>{});if(A.unm)A.unm();A.unm=DB.collection("members").doc(cfg.sess.id).onSnapshot(x=>{const m=x.exists&&x.data();if(m&&m.deletedAt&&A.ok){logout();toast("Konto gelöscht – 12 Tage wiederherstellbar")}})}
 const hx=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
 async function p2(salt,p){const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(p),"PBKDF2",false,["deriveBits"]);return"p2:"+hx(await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:new TextEncoder().encode(((C&&C.salt)||"")+":"+salt),iterations:150000},k,256))}
