@@ -87,6 +87,38 @@ function clean(b) {
   return body;
 }
 
+
+// ---- Kostenlose Variante: Cloudflare Workers AI (Binding "AI", kein Schluessel noetig) ----
+const FREE_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+function flat(c) {
+  if (typeof c === "string") return c;
+  return c.map((p) => p.type === "text" ? p.text : p.type === "tool_use" ? "[Werkzeug " + p.name + " " + JSON.stringify(p.input || {}) + "]" :
+    p.type === "tool_result" ? "[Ergebnis] " + (typeof p.content === "string" ? p.content : JSON.stringify(p.content)) :
+    p.type === "image" ? "[Foto: in der kostenlosen Version nicht lesbar]" : "").filter(Boolean).join("\n");
+}
+async function freeAI(env, body) {
+  const messages = [{ role: "system", content: "Du bist Schnorki, der freundliche Assistent eines Teams im Restaurant/Cafe. Antworte kurz und auf Deutsch, ausser der Nutzer schreibt in einer anderen Sprache. Nutze die Werkzeuge, wenn sie helfen." }];
+  for (const m of body.messages) messages.push({ role: m.role, content: flat(m.content) || "(leer)" });
+  const req = { messages, max_tokens: body.max_tokens };
+  if (body.tools) req.tools = body.tools.map((t) => ({ name: t.name, description: t.description, parameters: t.input_schema }));
+  const r = await env.AI.run(FREE_MODEL, req);
+  const x = r && r.result ? r.result : r;
+  const ch = x && x.choices && x.choices[0] && x.choices[0].message;
+  let text = (ch ? ch.content : x && x.response) || "";
+  if (typeof text !== "string") text = JSON.stringify(text);
+  let calls = (ch ? ch.tool_calls : x && x.tool_calls) || [];
+  const content = [];
+  if (text) content.push({ type: "text", text });
+  calls = calls.slice(0, 3);
+  calls.forEach((c, i) => {
+    const f = c.function || c;
+    let a = f.arguments !== undefined ? f.arguments : f.input;
+    if (typeof a === "string") { try { a = JSON.parse(a); } catch { a = {}; } }
+    content.push({ type: "tool_use", id: "t" + Date.now() + i, name: f.name, input: a || {} });
+  });
+  return { content, stop_reason: calls.length ? "tool_use" : "end_turn" };
+}
+
 export default {
   async fetch(req, env) {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors(req) });
@@ -107,6 +139,9 @@ export default {
     try { const t = await req.text(); if (t.length > MAX_BODY) return out(req, 413, { error: "size" }); b = JSON.parse(t); } catch { return out(req, 400, { error: "json" }); }
     const body = clean(b);
     if (!body) return out(req, 400, { error: "body" });
+    if (!env.ANTHROPIC_API_KEY && env.AI) {
+      try { const res = await freeAI(env, body); return out(req, 200, res); } catch { return out(req, 502, { error: "ai" }); }
+    }
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
