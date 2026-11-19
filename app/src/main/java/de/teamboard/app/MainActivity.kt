@@ -2,6 +2,7 @@ package de.teamboard.app
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -27,6 +29,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.webkit.WebViewAssetLoader
 import org.json.JSONObject
 import java.io.File
@@ -162,6 +166,71 @@ class MainActivity : AppCompatActivity() {
         })
 
         if (savedInstanceState == null) web.loadUrl("https://$HOST/assets/index.html") else web.restoreState(savedInstanceState)
+    }
+
+
+    // ---- Automatische App-Updates (GitHub Release "neu") ----
+    private var lastCheck = 0L
+    private var pendingApk: File? = null
+    private var checking = false
+
+    private fun checkUpdate(force: Boolean = false) {
+        val now = System.currentTimeMillis()
+        if (checking || (!force && now - lastCheck < 3_600_000)) return
+        checking = true
+        lastCheck = now
+        Thread {
+            val info = Updater.fetch()
+            val mine = try { PackageInfoCompat.getLongVersionCode(packageManager.getPackageInfo(packageName, 0)) } catch (e: Exception) { Long.MAX_VALUE }
+            runOnUiThread {
+                checking = false
+                if (info != null && info.code > mine && !isFinishing) askUpdate(info)
+            }
+        }.start()
+    }
+
+    private fun askUpdate(info: Updater.Info) {
+        AlertDialog.Builder(this)
+            .setTitle("Update verfügbar")
+            .setMessage("Neue Version ${info.name} ist bereit. Jetzt aktualisieren? Deine Daten bleiben erhalten.")
+            .setPositiveButton("Jetzt aktualisieren") { _, _ -> startDownload(info) }
+            .setNegativeButton("Später", null)
+            .show()
+    }
+
+    private fun startDownload(info: Updater.Info) {
+        val dlg = AlertDialog.Builder(this).setTitle("Update").setMessage("Lade herunter … 0 %").setCancelable(false).create()
+        dlg.show()
+        Thread {
+            val f = Updater.download(File(cacheDir, "updates"), info) { p -> runOnUiThread { dlg.setMessage("Lade herunter … $p %") } }
+            runOnUiThread {
+                dlg.dismiss()
+                if (f == null) Toast.makeText(this, "Update fehlgeschlagen. Bitte später erneut versuchen.", Toast.LENGTH_LONG).show()
+                else installApk(f)
+            }
+        }.start()
+    }
+
+    private fun installApk(f: File) {
+        if (Build.VERSION.SDK_INT >= 26 && !packageManager.canRequestPackageInstalls()) {
+            pendingApk = f
+            Toast.makeText(this, "Bitte „Installation erlauben“ aktivieren und zurückkehren.", Toast.LENGTH_LONG).show()
+            startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:$packageName")))
+            return
+        }
+        pendingApk = null
+        val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", f)
+        startActivity(Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "application/vnd.android.package-archive")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val p = pendingApk
+        if (p != null && p.exists() && (Build.VERSION.SDK_INT < 26 || packageManager.canRequestPackageInstalls())) installApk(p)
+        else checkUpdate()
     }
 
     override fun onRequestPermissionsResult(code: Int, perms: Array<out String>, res: IntArray) {

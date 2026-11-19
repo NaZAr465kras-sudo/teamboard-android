@@ -20,6 +20,13 @@ jobs:
         run: gradle assembleDebug --no-daemon
       - name: APK umbenennen
         run: cp app/build/outputs/apk/debug/app-debug.apk TeamBoard-NEU-WebView.apk
+      - name: Versionsdatei fuer Auto-Update
+        run: |
+          CODE=$(grep -oP 'versionCode = \K[0-9]+' app/build.gradle.kts)
+          NAME=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts)
+          SHA=$(sha256sum TeamBoard-NEU-WebView.apk | cut -d' ' -f1)
+          echo "{\"code\":$CODE,\"name\":\"$NAME\",\"sha256\":\"$SHA\"}" > version.json
+          cat version.json
       - uses: actions/upload-artifact@v4
         with:
           name: TeamBoard-NEU-WebView-APK
@@ -29,4 +36,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete neu --yes --cleanup-tag || true
-          gh release create neu TeamBoard-NEU-WebView.apk --title "Team-Board APK (neu)" --notes "Direkter Download: TeamBoard-NEU-WebView.apk"
+          gh release create neu TeamBoard-NEU-WebView.apk version.json --title "Team-Board APK (neu)" --notes "Direkter Download: TeamBoard-NEU-WebView.apk"
