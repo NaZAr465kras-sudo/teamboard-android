@@ -154,7 +154,8 @@ async function gemini(env, body) {
     if (r.ok) break;
     let msg = ""; try { msg = ((await r.json()).error || {}).message || ""; } catch {}
     last = m + " " + r.status + " " + msg.replace(/AIza[\w-]+/g, "***").slice(0, 160);
-    if (r.status !== 404) break;
+    if (![404, 429, 500, 502, 503, 504].includes(r.status)) break;
+    if (r.status !== 404) await new Promise((ok) => setTimeout(ok, 400)); // kurz warten, dann naechstes Modell
   }
   if (!r.ok) throw Object.assign(new Error("gemini: " + last), { status: r.status === 429 ? 429 : 502 });
   const d = await r.json();
