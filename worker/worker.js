@@ -119,6 +119,45 @@ async function freeAI(env, body) {
   return { content, stop_reason: calls.length ? "tool_use" : "end_turn" };
 }
 
+// ---- Gemini (Google AI Studio, Secret GEMINI_API_KEY) ----
+const GEMINI_MODEL = "gemini-2.5-flash";
+const SYS = "Du bist Schnorki, der freundliche Assistent eines Teams im Restaurant/Cafe. Antworte kurz und auf Deutsch, ausser der Nutzer schreibt in einer anderen Sprache. Nutze die Werkzeuge, wenn sie helfen.";
+function gschema(x) {
+  if (Array.isArray(x)) return x.map(gschema);
+  if (!x || typeof x !== "object") return x;
+  const o = {};
+  for (const k in x) if (!["additionalProperties", "$schema", "$id", "definitions", "$defs", "default", "examples"].includes(k)) o[k] = gschema(x[k]);
+  return o;
+}
+async function gemini(env, body) {
+  const contents = body.messages.map((m) => {
+    const parts = [];
+    if (typeof m.content === "string") parts.push({ text: m.content || "(leer)" });
+    else {
+      const t = flat(m.content.filter((p) => p.type !== "image"));
+      if (t) parts.push({ text: t });
+      for (const p of m.content) if (p.type === "image" && p.source && p.source.data) parts.push({ inlineData: { mimeType: p.source.media_type || "image/jpeg", data: p.source.data } });
+    }
+    if (!parts.length) parts.push({ text: "(leer)" });
+    return { role: m.role === "assistant" ? "model" : "user", parts };
+  });
+  const req = { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { maxOutputTokens: body.max_tokens } };
+  if (body.tools) req.tools = [{ functionDeclarations: body.tools.map((t) => ({ name: t.name, description: t.description || t.name, parameters: gschema(t.input_schema) })) }];
+  const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL + ":generateContent", {
+    method: "POST", headers: { "x-goog-api-key": env.GEMINI_API_KEY, "content-type": "application/json" }, body: JSON.stringify(req),
+  });
+  if (r.status === 429) throw Object.assign(new Error("rate"), { status: 429 });
+  if (!r.ok) throw new Error("gemini " + r.status);
+  const d = await r.json();
+  const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
+  const content = [], text = parts.filter((p) => p.text && !p.thought).map((p) => p.text).join("");
+  if (text) content.push({ type: "text", text });
+  const fc = parts.filter((p) => p.functionCall).slice(0, 3);
+  fc.forEach((p, i) => content.push({ type: "tool_use", id: "g" + Date.now() + i, name: p.functionCall.name, input: p.functionCall.args || {} }));
+  if (!content.length) content.push({ type: "text", text: "Dazu kann ich leider nichts sagen." });
+  return { content, stop_reason: fc.length ? "tool_use" : "end_turn" };
+}
+
 export default {
   async fetch(req, env) {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors(req) });
@@ -139,6 +178,9 @@ export default {
     try { const t = await req.text(); if (t.length > MAX_BODY) return out(req, 413, { error: "size" }); b = JSON.parse(t); } catch { return out(req, 400, { error: "json" }); }
     const body = clean(b);
     if (!body) return out(req, 400, { error: "body" });
+    if (!env.ANTHROPIC_API_KEY && env.GEMINI_API_KEY) {
+      try { return out(req, 200, await gemini(env, body)); } catch (e) { return out(req, e.status === 429 ? 429 : 502, { error: "ai" }); }
+    }
     if (!env.ANTHROPIC_API_KEY && env.AI) {
       try { const res = await freeAI(env, body); return out(req, 200, res); } catch { return out(req, 502, { error: "ai" }); }
     }
