@@ -81,9 +81,17 @@ nav button{flex-direction:column;gap:3px;padding:10px 0 8px}nav button .nl{font-
 .wh{display:flex;align-items:center;justify-content:space-between}.wh h2{margin:18px 0 6px}.wc{display:flex;margin-top:18px}.wg.off .wh h2{opacity:.4}.sub{font-size:12px;color:var(--hot);margin:14px 0 0}.x:disabled{opacity:.2;cursor:default}
 .rc{display:inline-flex;vertical-align:-1px;margin-left:8px;color:var(--mut);cursor:pointer}.rc.on{color:var(--tx)}.rc svg{width:15px;height:10px;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.rcl{display:flex;align-items:center}.rcl .rc{margin-left:8px}
 .login h1{cursor:default;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.sv{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}.sv.r{background:#c0392b}.sv.y{background:#d4a017}.sv.g{background:#2e8b57}
+.pg{display:grid;grid-template-columns:44px repeat(7,minmax(0,1fr));gap:3px;margin:10px 0 6px;font-size:11px;align-items:stretch}.pg>*{min-height:40px;border:1px solid var(--bd);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px 1px;background:transparent;color:var(--tx);font:inherit;font-size:11px;line-height:1.2;text-align:center;overflow:hidden;min-width:0}
+.pg .hd{min-height:42px;border-color:transparent;font-weight:600}.pg .hd.td{background:var(--ac);color:var(--on)}.pg .nm{align-items:flex-start;border-color:transparent;font-size:12px;padding-left:0;word-break:break-word}.pg .nm.me{font-weight:700}
+.pg .c{cursor:pointer}.pg .c.mine{background:var(--ac);color:var(--on)}.pg .c.fr{opacity:.45}.pg .c.tdy{border-color:var(--ac)}.pg .c:disabled{opacity:.35;cursor:default}.pg .cn{border-color:transparent;font-weight:600}.pg .cn.z{opacity:.35}
+.tl{position:relative;height:6px;background:var(--bd);border-radius:3px;margin-top:8px}.tl i{position:absolute;top:0;bottom:0;background:var(--ac);border-radius:3px}
+.cv{display:grid;grid-template-columns:repeat(18,1fr);gap:2px;margin:6px 0 10px}.cv i{height:16px;background:var(--ac);border-radius:3px}
+.dc{display:flex;gap:4px;overflow-x:auto;margin:8px 0}.dc button{flex:1 0 auto;padding:6px 8px;font-size:12px;border-radius:99px}.dc .on{background:var(--ac);color:var(--on);border-color:var(--ac)}
+details.card summary{cursor:pointer;font-weight:600}details.card ol{margin:10px 0 4px 20px;padding:0;list-style:decimal}details.card li{margin:5px 0;list-style:decimal}
 @media (min-width:700px){main{max-width:920px;padding:0 32px 150px}.wgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;align-items:start}nav{left:50%;right:auto;transform:translateX(-50%);width:100%;max-width:920px;border-left:1px solid var(--bd);border-right:1px solid var(--bd)}.mdl>div{max-width:640px;border-radius:16px}.mdl{align-items:center}#mic{right:max(20px,calc(50% - 440px))}.hero{padding-top:48px}.hero h1{font-size:32px}}@media (min-width:1100px){main{max-width:1180px}.wgrid{grid-template-columns:repeat(3,minmax(0,1fr))}nav{max-width:1180px}#mic{right:max(20px,calc(50% - 570px))}}@media (min-width:700px) and (orientation:landscape) and (max-height:600px){#v .hero{padding-top:20px}}
 </style></head>
-<body><div id="bn" role="note" style="display:none">Dies ist nur eine Testversion der App. Bei Problemen bitte an den Entwickler wenden. · Version al0.47.001f</div><main id="v"></main>
+<body><div id="bn" role="note" style="display:none">Dies ist nur eine Testversion der App. Bei Problemen bitte an den Entwickler wenden. · Version al0.48.011f</div><main id="v"></main>
 <div id="toast"></div>
 <button id="mic" aria-label="Sprachbefehl"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
 <nav id="nav"></nav>
@@ -155,7 +163,7 @@ let cfg={name:"",theme:"auto",speak:true};
 try{Object.assign(cfg,JSON.parse(localStorage.getItem("cfg")||"{}"))}catch(e){}
 delete cfg.sess;const save=()=>{try{const{sess,...r}=cfg;localStorage.setItem("cfg",JSON.stringify(r))}catch(e){}};
 const applyTheme=()=>{const r=document.documentElement;cfg.theme==="auto"?r.removeAttribute("data-theme"):r.setAttribute("data-theme",cfg.theme)};applyTheme();
-let LAY=null,PL=null,FL={};const off=k=>!!(FL.off&&FL.off[k]);const S={err:"",db:false};let DB=null,C=undefined,U=null,rf="all",rw="";const A={ok:false,admin:false,st:false,ad:false,shift:false,gen:new Set(),dis:new Set(),codes:{}};let cols={},data={notes:[],tasks:[],reports:[],members:[],requests:[],recipes:[],rgroups:[],rules:[],shifts:[],aihist:[],checklists:[],checks:[],plan:[],offs:[],stock:[],tdev:[],temps:[],audit:[],handover:[],repairs:[],feedback:[],orders:[],events:[],ideas:[],absence:[],offers:[],contacts:[]},tab="today",sel=today(),mon=new Date(),nf="all",mine=false,draft="";mon.setDate(1);
+let LAY=null,PL=null,FL={};const off=k=>!!(FL.off&&FL.off[k]);const S={err:"",db:false};let DB=null,C=undefined,U=null,rf="all",rw="";const A={ok:false,admin:false,st:false,ad:false,shift:false,gen:new Set(),dis:new Set(),codes:{}};let cols={},data={notes:[],tasks:[],reports:[],members:[],requests:[],recipes:[],rgroups:[],rules:[],shifts:[],aihist:[],checklists:[],checks:[],plan:[],offs:[],stock:[],tdev:[],temps:[],audit:[],handover:[],repairs:[],feedback:[],orders:[],events:[],ideas:[],absence:[],offers:[],contacts:[],news:[],onboard:[],emerg:[]},tab="today",sel=today(),mon=new Date(),nf="all",mine=false,draft="";mon.setDate(1);
 function toast(t,ms){const e=document.getElementById("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),ms||2500)}
 const foreign=t=>{const L=String(t||"").match(/\p{L}/gu)||[];if(L.length<2)return false;let ok=0;for(const c of L)if(/\p{Script=Latin}|\p{Script=Cyrillic}/u.test(c))ok++;return ok/L.length<.5};
 const EN=/\b(the|and|is|are|you|to|of|a|in|for|please|new|task|note|how|what|with|can|do|i)\b/gi,DE=/\b(der|die|das|und|ist|nicht|ein|eine|zu|mit|für|ich|wie|was|bitte|neue|aufgabe|notiz|kann|den|dem)\b/gi;
@@ -196,7 +204,7 @@ function addBox(ph,fn){const w=h("div","row");const i=h("input");i.placeholder=p
  const go=async()=>{if(await fn(i.value)){i.value="";render()}};b.onclick=go;i.onkeydown=e=>{if(e.key==="Enter")go()};w.append(i,b);return w}
 function hero(t,s){const e=h("div","hero");e.append(h("h1",null,t),h("p",null,s));return e}
 
-const WT={tasks:"Aufgaben heute",urgent:"Dringend im Team",calendar:"Kalender",report:"Problem melden",overview:"Überblick",shift:"Meine Schicht",ask:"Schnorki fragen",lists:"Checklisten heute",plan:"Mein Dienstplan",stock:"Einkauf",temp:"Temperaturen",handover:"Schichtübergabe",repair:"Reparaturen offen",events:"Nächste Events",tomorrow:"Morgen",latest:"Neueste Notizen",rec:"Neue Rezepte",team:"Team jetzt"},DEFHID=["overview","shift","ask","lists","plan","stock","temp","events","tomorrow","latest","rec","team"];
+const WT={briefing:"Neu seit deiner letzten Schicht",tasks:"Aufgaben heute",urgent:"Dringend im Team",calendar:"Kalender",report:"Problem melden",overview:"Überblick",shift:"Meine Schicht",ask:"Schnorki fragen",lists:"Checklisten heute",plan:"Mein Dienstplan",stock:"Einkauf",temp:"Temperaturen",handover:"Schichtübergabe",repair:"Reparaturen offen",events:"Nächste Events",tomorrow:"Morgen",latest:"Neueste Notizen",rec:"Neue Rezepte",team:"Team jetzt"},DEFHID=["overview","shift","ask","lists","plan","stock","temp","events","tomorrow","latest","rec","team"];
 const layout=()=>{const Z=PL||LAY,k=Object.keys(WT),o=((Z&&Z.order)||k).filter(x=>k.includes(x));k.forEach(x=>{if(!o.includes(x))o.push(x)});const sv=!!(Z&&Z.order),hd=((Z&&Z.hidden)||[]).filter(x=>k.includes(x));if(!sv)DEFHID.forEach(x=>{if(!hd.includes(x))hd.push(x)});else DEFHID.forEach(x=>{if(!Z.order.includes(x)&&!hd.includes(x))hd.push(x)});return{order:o,hidden:hd}};
 async function saveLay(order,hidden){LAY={order,hidden};render();try{if(DB)await DB.collection("layout").doc("home").set({order,hidden,by:cfg.sess.id,ts:Date.now()})}catch(e){toast("Speichern nicht möglich")}}
 async function savePL(order,hidden){PL={order,hidden};try{(cfg.pls=cfg.pls||{})[cfg.sess.id]=PL;save()}catch(e){}render();try{if(DB&&cfg.sess)await DB.collection("members").doc(cfg.sess.id).update({myLay:{order,hidden}})}catch(e){toast("Auf dem Server nicht gespeichert")}}
@@ -215,9 +223,9 @@ const WR={
  calendar(b){const d0=new Date(),off=(d0.getDay()+6)%7,g=h("div","grid");["Mo","Di","Mi","Do","Fr","Sa","So"].forEach(n=>g.append(h("b",null,n)));
   for(let i=0;i<7;i++){const d=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()-off+i),s=ymd(d),bt=h("button","day"+(s===today()?" td":""),String(d.getDate()));if(data.tasks.some(t=>t.date===s&&!t.done))bt.append(h("i"));bt.onclick=()=>{sel=s;mon=new Date(d.getFullYear(),d.getMonth(),1);goTab("cal")};g.append(bt)}
   b.append(g,h("div","hint","Tag antippen, um Aufgaben zu planen."))},
- report(b){const i=h("input");i.placeholder="Problem kurz beschreiben…";const bt=h("button","fix","Melden"),w=h("div","row");
-  const go=async()=>{const t=i.value.trim();if(!t)return;if(await put("reports",{text:t,type:"problem",who:cfg.name,whoId:cfg.sess.id,ts:Date.now(),done:false})){i.value="";toast("Gesendet – danke!")}};
-  bt.onclick=go;i.onkeydown=e=>{if(e.key==="Enter")go()};w.append(i,bt);b.append(w,h("div","hint","Geht direkt an die Leitung."))}};
+ report(b){const i=h("input");i.placeholder="Problem kurz beschreiben…";const bt=h("button","fix","Melden"),w=h("div","row"),ss=sevSel();ss.style.marginTop="8px";
+  const go=async()=>{const t=i.value.trim();if(!t)return;if(await sendRep(t,"problem",ss.value))i.value=""};
+  bt.onclick=go;i.onkeydown=e=>{if(e.key==="Enter")go()};w.append(i,bt);b.append(w,ss,h("div","hint","Geht direkt an die Leitung. Rot = Notfall, sofort."))}};
 const prog=(d,n)=>{const b=h("div","bar"),i=h("i");i.style.width=(n?d/n*100:0)+"%";b.append(i);b.style.marginTop="8px";return b};
 Object.assign(WR,{
  overview(b){const td=today(),k=[["Aufgaben offen",data.tasks.filter(t=>t.date===td&&!t.done).length,"today"],["Dringend",data.notes.filter(n=>n.cat==="hot"&&!n.done).length,"notes"],["Einkauf fehlt",off("stock")?0:data.stock.filter(s=>s.state==="need").length,"ops"],["Meldungen offen",data.reports.filter(r=>!r.done).length,"rep"]],g=h("div","st");g.style.gridTemplateColumns="repeat(2,1fr)";
@@ -240,11 +248,11 @@ Object.assign(WR,{
 const WL={handover:["ops","Öffnen",()=>{A.osub="handover"}],repair:["ops","Liste",()=>{A.osub="repair"}],events:["ops","Alle",()=>{A.osub="events"}],tasks:["cal","Planen"],urgent:["notes","Alle Notizen"],calendar:["cal","Monat"],report:["rep","Verlauf"],lists:["ops","Öffnen",()=>{A.osub="lists"}],plan:["ops","Plan",()=>{A.osub="plan"}],stock:["ops","Liste",()=>{A.osub="stock"}],temp:["ops","Messen",()=>{A.osub="temp"}],tomorrow:["cal","Kalender"],latest:["notes","Alle"],rec:["rec","Alle"],team:["adm","Admin"]};
 const offTab=k=>(k==="cal"&&off("cal"))||(k==="rec"&&off("rec"))||(k==="rep"&&off("rep"))||(k==="ops"&&!opsOn().length);
 function logA(act){try{if(DB)DB.collection("audit").doc(nid()).set({who:cfg.name,whoId:(cfg.sess||{}).id||"",act,ts:Date.now()}).catch(()=>{})}catch(e){}}
-const OPS=[["lists","Listen"],["plan","Plan"],["stock","Einkauf"],["temp","Temperatur"],["handover","Übergabe"],["repair","Reparaturen"],["orders","Bestellungen"],["feedback","Gäste"],["events","Events"],["absence","Ausfall"],["ideas","Pinnwand"],["offers","Angebot"],["contacts","Notfall"]],opsOn=()=>OPS.filter(o=>!off(o[0]));
+const OPS=[["lists","Listen"],["plan","Plan"],["onb","Einarbeitung"],["news","News"],["handover","Übergabe"],["stock","Einkauf"],["temp","Temperatur"],["repair","Reparaturen"],["orders","Bestellungen"],["feedback","Gäste"],["events","Events"],["absence","Ausfall"],["ideas","Pinnwand"],["offers","Angebot"],["emerg","Notfälle"]],opsOn=()=>OPS.filter(o=>!off(o[0]));
 const dayL=s=>dlab(new Date(s+"T12:00").getTime());
-function vOps(v){v.append(hero("Betrieb","Übergabe, Reparaturen, Gäste, Events, Plan, Einkauf, Temperaturen"));const subs=opsOn(),sub=subs.some(x=>x[0]===A.osub)?A.osub:(subs[0]||[])[0],nav=h("div","chips nv");
+function vOps(v){v.append(hero("Betrieb","Plan, Einarbeitung, News, Übergabe, Reparaturen, Events, Notfälle"));const subs=opsOn(),sub=subs.some(x=>x[0]===A.osub)?A.osub:(subs[0]||[])[0],nav=h("div","chips nv");
  subs.forEach(([k,l])=>{const b=h("button","alt"+(sub===k?" on":""),l);b.onclick=()=>{A.osub=k;A.mdl=null;render()};nav.append(b)});v.append(nav);
- (({lists:oLists,plan:oPlan,stock:oStock,temp:oTemp})[sub]||(w=>oMod(w,sub)))(v)}
+ (({lists:oLists,plan:oPlan,stock:oStock,temp:oTemp,onb:oOnb,emerg:oEmerg})[sub]||(w=>oMod(w,sub)))(v)}
 /* ---- Checklisten ---- */
 async function tick(l,d,i){const id=l.id+"_"+d,ck=data.checks.find(c=>c.id===id),dn={...((ck&&ck.done)||{})};if(dn[i])delete dn[i];else dn[i]={n:cfg.name,t:Date.now()};
  const had=!!(ck&&ck.done&&ck.done[i]&&ck.done[i].t),val=had?{n:"",t:0}:{n:cfg.name,t:Date.now()};dn[i]=val;const doc={lid:l.id,date:d,done:dn,ts:Date.now()},ix=data.checks.findIndex(c=>c.id===id);if(ix>=0)data.checks[ix]={id,...doc};else data.checks.unshift({id,...doc});render();
@@ -261,30 +269,251 @@ function oLists(v){const d=A.od||today(),L=data.checklists.slice().sort((a,b)=>a
  if(A.admin&&L.length){const b=h("button","fix","Neue Liste");b.onclick=()=>{A.mdl={t:"list",id:""};render()};v.append(h("h2",null,"Verwaltung"),b)}
  if(A.mdl&&A.mdl.t==="list")v.append(listModal(A.mdl.id))}
 /* ---- Dienstplan ---- */
-function oPlan(v){const w0=A.pw||0,n=new Date(),wd=(n.getDay()+6)%7,days=[...Array(7)].map((_,i)=>new Date(n.getFullYear(),n.getMonth(),n.getDate()-wd+w0*7+i)),me=cfg.sess.id;
- const wk=h("div","row"),pv=h("button","alt","‹"),nx=h("button","alt","›"),lb=h("div",null,dlab(days[0])+" – "+dlab(days[6]));lb.style.cssText="text-align:center;flex:3;align-self:center";pv.onclick=()=>{A.pw=w0-1;render()};nx.onclick=()=>{A.pw=w0+1;render()};wk.append(pv,lb,nx);v.append(h("h2",null,"Woche"),wk);
- days.forEach(d=>{const s=ymd(d),E=data.plan.filter(p=>p.date===s).sort((a,b)=>(a.from||"").localeCompare(b.from||"")),O=data.offs.filter(o=>o.date===s&&o.status==="ok");v.append(h("h2",null,dlab(d.getTime())+(s===today()?" · heute":"")));
-  if(!E.length&&!O.length)v.append(h("div","hint","Keine Einträge"));
-  E.forEach(p=>{const r=h("div","card item"),x=h("div","t"),mp=p.uid===me,t1=h("div",null,(mp?"Du":p.name)+" · "+p.from+"–"+p.to);if(mp)t1.style.fontWeight="600";x.append(t1,h("div","hint",(p.note||"")+(p.swapBy?(p.note?" · ":"")+"Tausch gesucht":"")));r.append(x);
-   if(mp){const b=h("button","alt",p.swapBy?"Tausch zurück":"Tausch anfragen");b.onclick=()=>patch("plan",p.id,p.swapBy?{swapBy:"",swapById:""}:{swapBy:cfg.name,swapById:me});r.append(b)}
-   else if(p.swapBy){const b=h("button","fix","Übernehmen");b.onclick=()=>{patch("plan",p.id,{uid:me,name:cfg.name,swapBy:"",swapById:"",note:((p.note||"")+" (getauscht von "+p.name+")").trim()});toast("Schicht übernommen")};r.append(b)}
-   if(A.admin)r.append(trashBtn(()=>{logA("Plan-Eintrag gelöscht: "+p.name+" "+p.date);del("plan",p.id)}));v.append(r)});
-  O.forEach(o=>v.append(h("div","hint","frei: "+o.name)))});
- v.append(h("h2",null,"Frei wünschen"));{const di=h("input");di.type="date";di.value=ymd(days[0]);const b=h("button","fix","Anfragen");b.onclick=()=>{if(!di.value)return;put("offs",{uid:me,name:cfg.name,date:di.value,status:"pending",ts:Date.now()});toast("Wunsch gesendet")};const r=h("div","row");r.append(di,b);v.append(r);
-  data.offs.filter(o=>o.uid===me&&o.date>=today()).sort((a,b)=>a.date.localeCompare(b.date)).forEach(o=>{const c=h("div","card item"),x=h("div","t");x.append(h("div",null,dayL(o.date)),h("div","hint",o.status==="ok"?"genehmigt":o.status==="no"?"abgelehnt":"wartet auf Antwort"));c.append(x,trashBtn(()=>del("offs",o.id)));v.append(c)})}
- if(A.admin){const P=data.offs.filter(o=>o.status==="pending").sort((a,b)=>a.date.localeCompare(b.date));v.append(h("h2",null,"Offene Wünsche ("+P.length+")"));if(!P.length)v.append(h("div","hint","Keine offenen Wünsche"));
-  P.forEach(o=>{const c=h("div","card item"),x=h("div","t"),ok=h("button","fix","Ja"),no=h("button","alt","Nein");x.append(h("div",null,o.name+" · "+dayL(o.date)));ok.onclick=()=>{patch("offs",o.id,{status:"ok"});logA("Frei genehmigt: "+o.name+" "+o.date)};no.onclick=()=>patch("offs",o.id,{status:"no"});c.append(x,ok,no);v.append(c)});
-  v.append(h("h2",null,"Schicht eintragen"));const sl=h("select"),di=h("input"),f=h("input"),t=h("input"),no=h("input"),b=h("button","fix","Eintragen");
-  data.members.filter(m=>!m.deletedAt).forEach(m=>{const o=h("option",null,m.name);o.value=m.id;sl.append(o)});di.type="date";di.value=ymd(days[0]);f.type="time";f.value="09:00";t.type="time";t.value="17:00";no.placeholder="Notiz (optional)";
-  b.onclick=()=>{const m=data.members.find(x=>x.id===sl.value);if(!m||!di.value||!f.value||!t.value)return toast("Bitte alles ausfüllen");put("plan",{uid:m.id,name:m.name,date:di.value,from:f.value,to:t.value,note:no.value.trim(),ts:Date.now()});logA("Plan-Eintrag: "+m.name+" "+di.value);toast("Eingetragen")};
-  const r1=h("div","row"),r2=h("div","row");r1.append(sl,di);r2.append(f,t);v.append(r1,r2,no,b);no.style.marginTop="8px";b.style.marginTop="12px"}}
+const PRE=[["Früh","07:00","15:00"],["Mittag","10:00","18:00"],["Spät","15:00","23:00"],["Ganztag","09:00","19:00"]],DN=["Mo","Di","Mi","Do","Fr","Sa","So"];
+const tmin=s=>{const m=/^(\d{1,2}):(\d{2})/.exec(s||"");return m?+m[1]*60+ +m[2]:0};
+const sEnd=p=>{const a=tmin(p.from);let b=tmin(p.to);if(b<=a)b+=1440;return[a,b]};
+const shortT=s=>{const m=/^(\d{1,2}):(\d{2})/.exec(s||"");return m?String(+m[1])+(m[2]==="00"?"":":"+m[2]):String(s||"")};
+const pHours=p=>{const r=sEnd(p);return(r[1]-r[0])/60};
+const fh=x=>String(Math.round(x*10)/10).replace(".",",")+" h";
+const nowMin=()=>{const n=new Date();return n.getHours()*60+n.getMinutes()};
+const wkNo=d=>{const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return Math.ceil(((t-y)/864e5+1)/7)};
+const wkDays=w=>{const n=new Date(),wd=(n.getDay()+6)%7;return[...Array(7)].map((_,i)=>new Date(n.getFullYear(),n.getMonth(),n.getDate()-wd+w*7+i))};
+const clash=(uid,date,f,t,ex)=>{const r=sEnd({from:f,to:t});return data.plan.find(p=>p.uid===uid&&p.date===date&&p.id!==ex&&(q=>r[0]<q[1]&&q[0]<r[1])(sEnd(p)))};
+const dm=s=>{const d=new Date(s+"T12:00");return d.getDate()+"."+(d.getMonth()+1)+"."};
+function takeShift(p){const me=cfg.sess.id,c=clash(me,p.date,p.from,p.to,p.id);if(c)return toast("Überschneidung mit deiner Schicht "+c.from+"–"+c.to);patch("plan",p.id,{uid:me,name:cfg.name,swapBy:"",swapById:"",note:((p.note||"")+" (getauscht von "+p.name+")").trim()});toast("Schicht übernommen")}
+function untilTxt(p){const ms=new Date(p.date+"T"+p.from)-new Date();if(!(ms>0))return"jetzt";const m=Math.round(ms/6e4);if(m<60)return"in "+m+" Min.";if(m<1440)return"in "+Math.floor(m/60)+" Std. "+(m%60)+" Min.";const d=Math.round(ms/864e5);return"in "+d+(d===1?" Tag":" Tagen")}
+function offBlock(v,me,date){const mine=data.offs.filter(o=>o.uid===me&&o.date>=today()).sort((a,b)=>a.date.localeCompare(b.date));
+ const di=h("input");di.type="date";di.value=date||today();const b=h("button","fix","Frei wünschen"),r=h("div","row");b.onclick=()=>{if(!di.value)return;if(data.offs.some(o=>o.uid===me&&o.date===di.value))return toast("Für diesen Tag gibt es schon einen Wunsch");put("offs",{uid:me,name:cfg.name,date:di.value,status:"pending",ts:Date.now()});toast("Wunsch gesendet")};r.append(di,b);v.append(r);
+ mine.forEach(o=>{const c=h("div","card item"),x=h("div","t");x.append(h("div",null,dayL(o.date)),h("div","hint",o.status==="ok"?"genehmigt":o.status==="no"?"abgelehnt":"wartet auf Antwort"));c.append(x,trashBtn(()=>del("offs",o.id)));v.append(c)})}
+function oPlan(v){
+ const w0=A.pw||0,days=wkDays(w0),ds=days.map(ymd),me=cfg.sess.id,ad=!!A.admin,td=today(),view=A.pv||"week";
+ if(!A.pd||!ds.includes(A.pd))A.pd=ds.includes(td)?td:ds[0];
+ const wkP=data.plan.filter(p=>p.date>=ds[0]&&p.date<=ds[6]),over=p=>p.date<td||(p.date===td&&tmin(p.to)>tmin(p.from)&&tmin(p.to)<=nowMin());
+ const nav=h("div","row"),pv=h("button","alt","‹"),nx=h("button","alt","›"),tb=h("button","alt","Heute"),lb=h("div",null,"KW "+wkNo(days[0])+" · "+dm(ds[0])+" – "+dm(ds[6]));
+ lb.style.cssText="text-align:center;flex:3;align-self:center;font-weight:600";pv.onclick=()=>{A.pw=w0-1;render()};nx.onclick=()=>{A.pw=w0+1;render()};tb.onclick=()=>{A.pw=0;A.pd=td;render()};nav.append(pv,lb,tb,nx);v.append(nav);
+ const mineUp=data.plan.filter(p=>p.uid===me&&!over(p)&&p.date>=td).sort((a,b)=>(a.date+a.from).localeCompare(b.date+b.from)),nxt=mineUp[0],myW=wkP.filter(p=>p.uid===me),myH=myW.reduce((a,p)=>a+pHours(p),0),sm=h("div","card");
+ if(nxt){const on=nxt.date===td&&tmin(nxt.from)<=nowMin();sm.append(h("div",null,on?"Du bist jetzt im Dienst bis "+nxt.to:"Nächste Schicht: "+(nxt.date===td?"Heute":dayL(nxt.date))+" · "+nxt.from+"–"+nxt.to+" ("+untilTxt(nxt)+")"))}else sm.append(h("div",null,"Keine kommende Schicht eingetragen"));
+ sm.append(h("div","hint","Diese Woche für dich: "+fh(myH)+" · "+myW.length+(myW.length===1?" Schicht":" Schichten")));v.append(sm);
+ const W=data.plan.filter(p=>p.swapBy&&p.uid!==me&&!over(p)&&p.date>=td).sort((a,b)=>(a.date+a.from).localeCompare(b.date+b.from));
+ if(W.length){v.append(h("h2",null,"Tausch-Angebote ("+W.length+")"));W.slice(0,6).forEach(p=>{const r=h("div","card item"),x=h("div","t"),b=h("button","fix","Übernehmen");x.append(h("div",null,p.name+" · "+dayL(p.date)+" · "+p.from+"–"+p.to),h("div","hint",fh(pHours(p))+(p.note?" · "+p.note:"")));b.onclick=()=>takeShift(p);r.append(x,b);v.append(r)})}
+ const ch=h("div","chips nv");[["week","Woche"],["day","Tag"],["mine","Meine"]].forEach(([k,l])=>{const b=h("button","alt"+(view===k?" on":""),l);b.onclick=()=>{A.pv=k;render()};ch.append(b)});v.append(ch);
+ const openM=(uid,date,ids)=>{A.mdl={t:"shift",uid,date,ids:ids||[]};render()};
+ if(view==="week"){
+  const ppl=new Map();data.members.filter(m=>!m.deletedAt).forEach(m=>{if(ad||m.id===me)ppl.set(m.id,m.name)});wkP.forEach(p=>{if(!ppl.has(p.uid))ppl.set(p.uid,p.name)});
+  const rows=[...ppl].sort((a,b)=>(a[0]===me?-1:b[0]===me?1:0)||(a[1]||"").localeCompare(b[1]||"","de")),g=h("div","pg");g.append(h("div","hd",""));
+  days.forEach((d,i)=>{const b=h("button","hd"+(ds[i]===td?" td":""));b.append(h("span",null,DN[i]),h("span",null,String(d.getDate())));b.onclick=()=>{A.pd=ds[i];A.pv="day";render()};g.append(b)});
+  rows.forEach(([uid,name])=>{g.append(h("div","nm"+(uid===me?" me":""),uid===me?"Du":(name||"?").split(" ")[0]));
+   days.forEach((d,i)=>{const s=ds[i],E=wkP.filter(p=>p.uid===uid&&p.date===s).sort((a,b)=>tmin(a.from)-tmin(b.from)),O=data.offs.some(o=>o.uid===uid&&o.date===s&&o.status==="ok"),c=h("button","c"+(E.length&&uid===me?" mine":"")+(O&&!E.length?" fr":"")+(s===td?" tdy":""));
+    if(E.length)E.forEach(p=>c.append(h("span",null,shortT(p.from)+"–"+shortT(p.to)+(p.swapBy?" ⇄":""))));else c.append(h("span",null,O?"frei":(ad||uid===me)&&s>=td?"+":"·"));
+    c.setAttribute("aria-label",(name||"")+" "+dayL(s));if(!E.length&&!O&&!ad&&!(uid===me&&s>=td))c.disabled=true;
+    c.onclick=()=>openM(uid,s,E.map(p=>p.id));g.append(c)})});
+  g.append(h("div","nm","Team"));days.forEach((d,i)=>{const n=new Set(wkP.filter(p=>p.date===ds[i]).map(p=>p.uid)).size;g.append(h("div","cn"+(n?"":" z"),n?String(n):"–"))});
+  v.append(g,h("div","hint","Antippen: ansehen"+(ad?", ändern oder neue Schicht (+)":", eigene Schicht tauschen oder frei wünschen")+" · ⇄ = Tausch gesucht · unten: Besetzung pro Tag"));
+  const hr=h("h2",null,ad?"Stunden diese Woche":"Meine Stunden");v.append(hr);
+  const HL=rows.map(([uid,name])=>[uid,name,wkP.filter(p=>p.uid===uid).reduce((a,p)=>a+pHours(p),0)]).filter(x=>ad?x[2]>0:x[0]===me);
+  if(!HL.length)v.append(h("div","hint","Keine Stunden geplant"));HL.forEach(([uid,name,hh])=>{const r=h("div","card");r.append(h("div",null,(uid===me?"Du":name)+" · "+fh(hh)),prog(Math.min(hh,40),40));v.append(r)})}
+ else if(view==="day"){
+  const dc=h("div","dc");days.forEach((d,i)=>{const b=h("button","alt"+(ds[i]===A.pd?" on":""),DN[i]+" "+d.getDate());b.onclick=()=>{A.pd=ds[i];render()};dc.append(b)});v.append(dc);
+  const s=A.pd,E=wkP.filter(p=>p.date===s).sort((a,b)=>tmin(a.from)-tmin(b.from)||(a.name||"").localeCompare(b.name||"")),O=data.offs.filter(o=>o.date===s&&o.status==="ok");
+  v.append(h("h2",null,dlab(new Date(s+"T12:00").getTime())+(s===td?" · heute":"")));
+  if(E.length){const cv=h("div","cv"),cnt=[];for(let hr=6;hr<24;hr++)cnt.push(E.filter(p=>{const r=sEnd(p);return r[0]<(hr+1)*60&&r[1]>hr*60}).length);const mx=Math.max(1,...cnt);cnt.forEach((n,i)=>{const e=h("i");e.style.opacity=n?String(.2+.8*n/mx):"0.07";e.title=(i+6)+":00 · "+n;cv.append(e)});v.append(h("div","hint","Besetzung 6–24 Uhr (dunkler = mehr Leute)"),cv)}
+  if(!E.length)v.append(h("div","empty","Niemand eingetragen"));
+  E.forEach(p=>{const r=h("div","card item"),x=h("div","t"),mp=p.uid===me,t1=h("div",null,(mp?"Du":p.name)+" · "+p.from+"–"+p.to+" · "+fh(pHours(p)));if(mp)t1.style.fontWeight="600";x.append(t1);if(p.note||p.swapBy)x.append(h("div","hint",(p.note||"")+(p.swapBy?(p.note?" · ":"")+"Tausch gesucht":"")));
+   const tl=h("div","tl"),i=h("i"),q=sEnd(p),a=Math.max(0,(q[0]-360)/1080*100),w=Math.max(2,Math.min(100-a,(q[1]-Math.max(q[0],360))/1080*100));i.style.left=a+"%";i.style.width=w+"%";tl.append(i);x.append(tl);r.append(x);
+   if(!mp&&p.swapBy&&!over(p)){const b=h("button","fix","Übernehmen");b.onclick=e=>{e.stopPropagation();takeShift(p)};r.append(b)}
+   r.style.cursor="pointer";r.onclick=()=>openM(p.uid,p.date,[p.id]);v.append(r)});
+  O.forEach(o=>v.append(h("div","hint","frei: "+o.name)));
+  if(ad){const b=h("button","fix","＋ Schicht an diesem Tag");b.onclick=()=>openM("",s,[]);v.append(b)}}
+ else{
+  const L=data.plan.filter(p=>p.uid===me&&!over(p)&&p.date>=td).sort((a,b)=>(a.date+a.from).localeCompare(b.date+b.from)).slice(0,30);
+  v.append(h("h2",null,"Meine nächsten Schichten"));if(!L.length)v.append(h("div","empty","Noch nichts eingetragen"));
+  L.forEach(p=>{const r=h("div","card item"),x=h("div","t"),b=h("button","alt",p.swapBy?"Tausch zurück":"Tausch anfragen");x.append(h("div",null,(p.date===td?"Heute":dayL(p.date))+" · "+p.from+"–"+p.to),h("div","hint",fh(pHours(p))+(p.note?" · "+p.note:"")+(p.swapBy?" · Tausch gesucht":"")));b.onclick=()=>patch("plan",p.id,p.swapBy?{swapBy:"",swapById:""}:{swapBy:cfg.name,swapById:me});r.append(x,b);v.append(r)});
+  v.append(h("h2",null,"Frei wünschen"));offBlock(v,me,ds[0]>td?ds[0]:td)}
+ if(ad){
+  const P=data.offs.filter(o=>o.status==="pending").sort((a,b)=>a.date.localeCompare(b.date));v.append(h("h2",null,"Offene Wünsche ("+P.length+")"));if(!P.length)v.append(h("div","hint","Keine offenen Wünsche"));
+  P.forEach(o=>{const c=h("div","card item"),x=h("div","t"),ok=h("button","fix","Ja"),no=h("button","alt","Nein"),cl=data.plan.filter(p=>p.uid===o.uid&&p.date===o.date);x.append(h("div",null,o.name+" · "+dayL(o.date)));if(cl.length)x.append(h("div","hint","Hat an dem Tag eine Schicht: "+cl.map(p=>p.from+"–"+p.to).join(", ")));ok.onclick=()=>{patch("offs",o.id,{status:"ok"});logA("Frei genehmigt: "+o.name+" "+o.date)};no.onclick=()=>patch("offs",o.id,{status:"no"});c.append(x,ok,no);v.append(c)});
+  v.append(h("h2",null,"Plan-Werkzeuge"));
+  const copyWeek=async()=>{const prev=wkDays(w0-1).map(ymd),src=data.plan.filter(p=>p.date>=prev[0]&&p.date<=prev[6]);if(!src.length)return toast("Die Vorwoche ist leer");let n=0;for(const p of src.slice()){const d=ds[prev.indexOf(p.date)];if(!d||clash(p.uid,d,p.from,p.to))continue;await put("plan",{uid:p.uid,name:p.name,date:d,from:p.from,to:p.to,note:p.note&&!/getauscht/.test(p.note)?p.note:"",ts:Date.now()});n++}logA("Plan kopiert: "+n+" Schichten");toast(n+" Schichten aus der Vorwoche übernommen")};
+  const shareWeek=async()=>{let t="Dienstplan KW "+wkNo(days[0])+" ("+dm(ds[0])+"–"+dm(ds[6])+")";days.forEach((d,i)=>{const E=wkP.filter(p=>p.date===ds[i]).sort((a,b)=>tmin(a.from)-tmin(b.from));t+="\n\n"+DN[i]+" "+dm(ds[i]);if(!E.length)t+="\n  –";E.forEach(p=>{t+="\n  "+p.name+" "+p.from+"–"+p.to})});try{if(navigator.share){await navigator.share({text:t});return}}catch(e){if(e&&e.name==="AbortError")return}try{await navigator.clipboard.writeText(t);toast("Plan kopiert – jetzt einfügen und senden")}catch(e){toast("Teilen nicht möglich")}};
+  const add=h("button","fix","＋ Schicht eintragen"),cp=h("button","alt","Vorwoche übernehmen"),sh=h("button","alt","Plan teilen"),r=h("div","row");add.onclick=()=>openM("",view==="day"?A.pd:(ds.includes(td)?td:ds[0]),[]);cp.onclick=copyWeek;sh.onclick=shareWeek;r.append(cp,sh);v.append(add,r);add.style.marginBottom="8px"}
+ if(A.mdl&&A.mdl.t==="shift")v.append(shiftModal(A.mdl))}
+function shiftModal(m){const ad=!!A.admin,me=cfg.sess.id,E=(m.ids||[]).map(id=>data.plan.find(p=>p.id===id)).filter(Boolean),past=m.date<today();
+ return modal(m.date?dayL(m.date):"Schicht",s=>{
+  if(!ad){
+   E.forEach(p=>{const c=h("div","card");c.append(h("div",null,(p.uid===me?"Du":p.name)+" · "+p.from+"–"+p.to+" ("+fh(pHours(p))+")"));if(p.note)c.append(h("div","hint",p.note));if(p.swapBy)c.append(h("div","hint","Tausch gesucht"));
+    if(p.uid===me&&!past){const b=h("button","alt",p.swapBy?"Tausch zurücknehmen":"Tausch anfragen");b.onclick=()=>{patch("plan",p.id,p.swapBy?{swapBy:"",swapById:""}:{swapBy:cfg.name,swapById:me});A.mdl=null;render()};c.append(b)}
+    else if(p.swapBy&&p.uid!==me&&!past){const b=h("button","fix","Schicht übernehmen");b.onclick=()=>{takeShift(p);A.mdl=null;render()};c.append(b)}s.append(c)});
+   if(m.uid===me&&!E.length&&!past){const o=data.offs.find(x=>x.uid===me&&x.date===m.date);if(o)s.append(h("div","hint",o.status==="ok"?"Frei genehmigt":o.status==="no"?"Frei abgelehnt":"Dein Frei-Wunsch wartet auf Antwort"));else{const b=h("button","fix","Diesen Tag frei wünschen");b.onclick=()=>{put("offs",{uid:me,name:cfg.name,date:m.date,status:"pending",ts:Date.now()});toast("Wunsch gesendet");A.mdl=null;render()};s.append(b)}}
+   if(!E.length&&m.uid!==me)s.append(h("div","hint","Keine Schicht"));return}
+  const ed=m.edit?data.plan.find(p=>p.id===m.edit):null;
+  if(!ed)E.forEach(p=>{const c=h("div","card item"),x=h("div","t"),b=h("button","alt","Ändern");x.append(h("div",null,p.name+" · "+p.from+"–"+p.to+" ("+fh(pHours(p))+")"),h("div","hint",(p.note||"")+(p.swapBy?" Tausch gesucht":"")));b.onclick=()=>{A.mdl={...m,edit:p.id};render()};c.append(x,b,trashBtn(()=>{logA("Plan-Eintrag gelöscht: "+p.name+" "+p.date);del("plan",p.id);A.mdl=null;render()}));s.append(c)});
+  s.append(h("div","sub",ed?"Schicht ändern":E.length?"Weitere Schicht hinzufügen":"Neue Schicht"));
+  const M=data.members.filter(x=>!x.deletedAt).sort((a,b)=>(a.name||"").localeCompare(b.name||"","de")),sl=h("select");M.forEach(x=>{const o=h("option",null,x.name);o.value=x.id;sl.append(o)});sl.value=ed?ed.uid:(M.some(x=>x.id===m.uid)?m.uid:(M[0]||{}).id);
+  const f=h("input"),t=h("input"),no=h("input");f.type=t.type="time";f.value=ed?ed.from:"07:00";t.value=ed?ed.to:"15:00";no.placeholder="Notiz (optional)";no.value=ed?(ed.note||""):"";
+  const pr=h("div","chips");PRE.forEach(([l,a,b])=>{const x=h("button","alt",l+" "+shortT(a)+"–"+shortT(b));x.onclick=()=>{f.value=a;t.value=b};pr.append(x)});
+  const wd=wkDays(A.pw||0),sel=new Set([m.date]),dr=h("div","chips");if(!ed)wd.forEach((d,i)=>{const s2=ymd(d),b=h("button","alt"+(sel.has(s2)?" on":""),DN[i]+" "+d.getDate());b.onclick=()=>{sel.has(s2)?sel.delete(s2):sel.add(s2);b.classList.toggle("on")};dr.append(b)});
+  const bs=h("button","fix",ed?"Speichern":"Eintragen");bs.style.marginTop="12px";
+  bs.onclick=async()=>{const mem=data.members.find(x=>x.id===sl.value);if(!mem||!f.value||!t.value)return toast("Bitte Person und Zeiten wählen");const D=ed?[ed.date]:[...sel].sort();if(!D.length)return toast("Bitte mindestens einen Tag wählen");
+   for(const d of D){const c=clash(mem.id,d,f.value,t.value,ed&&ed.id);if(c)return toast(mem.name+" hat am "+dm(d)+" schon "+c.from+"–"+c.to)}
+   for(const d of D){if(ed)await patch("plan",ed.id,{uid:mem.id,name:mem.name,from:f.value,to:t.value,note:no.value.trim()});else await put("plan",{uid:mem.id,name:mem.name,date:d,from:f.value,to:t.value,note:no.value.trim(),ts:Date.now()})}
+   logA("Plan: "+mem.name+" "+D.join(", ")+" "+f.value+"–"+t.value);toast(D.length>1?D.length+" Schichten eingetragen":"Gespeichert");A.mdl=null;render()};
+  [sl,pr,f,t,no].forEach(e=>e.style.marginBottom="8px");const tr=h("div","row");tr.append(f,t);s.append(sl,pr,tr,no);if(!ed){s.append(h("div","hint","Tage (mehrere möglich):"),dr)}s.append(bs)})}
+/* ---- Probleme: 3 Stufen ---- */
+const sevL=k=>(SEV.find(z=>z[0]===k)||[])[1]||"";const SEVE={r:"🔴",y:"🟡",g:"🟢"},SEV=[["r","Notfall – sofort!"],["y","Lösung innerhalb von 3 Tagen"],["g","Zur Info, nicht dringend"]],SO={r:0,y:1,g:2};
+const sevSel=()=>{const s=h("select");SEV.forEach(([k,l])=>{const o=h("option",null,SEVE[k]+" "+l);o.value=k;s.append(o)});s.value="y";s.setAttribute("aria-label","Dringlichkeit");return s};
+const sevDot=k=>h("span","sv "+k);
+const repRank=x=>x.type==="problem"?SO[x.sev||"y"]:3;
+async function sendRep(t,type,sev){const o={text:t,type,who:cfg.name,whoId:cfg.sess.id,ts:Date.now(),done:false};if(type==="problem")o.sev=["r","y","g"].includes(sev)?sev:"y";const ok=await put("reports",o);
+ if(ok){if(o.sev==="r"){await addNote("🔴 NOTFALL: "+t,"hot");toast("Notfall gesendet – bei Gefahr sofort 112 und die Leitung anrufen!")}else toast("Gesendet – danke!")}return ok}
+/* ---- Neu seit der letzten Schicht ---- */
+const BF=()=>{const id=cfg.sess.id;cfg.bf=cfg.bf||{};if(!cfg.bf[id]){cfg.bf[id]={t:Date.now()-864e5,r:{}};save()}return cfg.bf[id]};
+function briefItems(){const b=BF(),me=cfg.sess.id,td=today(),t2=ymd(new Date(Date.now()+864e5)),I=[],add=(src,x,txt,ts)=>{if(!x||b.r[x.id]||x.whoId===me)return;I.push({id:x.id,src,txt,ts:ts||x.ts||0,who:x.who})};
+ if(!off("news"))data.news.filter(x=>x.ts>b.t).forEach(x=>add((x.cat?x.cat:"News"),x,x.text));
+ if(!off("handover"))data.handover.filter(x=>x.ts>b.t).forEach(x=>add("Übergabe",x,x.text));
+ data.notes.filter(n=>n.cat==="hot"&&!n.done&&n.ts>b.t).forEach(x=>add("Dringend",x,x.text));
+ data.reports.filter(r=>r.type==="problem"&&r.sev==="r"&&!r.done&&r.ts>b.t).forEach(x=>add("🔴 Notfall",x,x.text));
+ if(!off("repair"))data.repairs.filter(r=>r.urgent&&r.state!=="done"&&r.ts>b.t).forEach(x=>add("Reparatur",x,x.text));
+ if(!off("absence"))data.absence.filter(r=>r.state!=="done"&&r.ts>b.t).forEach(x=>add("Ausfall",x,x.text));
+ if(!off("events"))data.events.filter(e=>e.date>=td&&e.date<=t2).forEach(x=>add("Event "+dayL(x.date),x,x.text+(x.sec?" – Vorbereitung: "+x.sec:"")));
+ return I.sort((a,c)=>c.ts-a.ts)}
+Object.assign(WR,{briefing(b){if(off("brief"))return 0;const I=briefItems();if(!I.length){b.append(h("div","empty","Alles gelesen ✓ – nichts Neues seit deiner letzten Schicht"));return}
+ I.slice(0,10).forEach(it=>{const r=h("div","card item"),k=h("button","chk"),x=h("div","t");k.setAttribute("aria-label","Gelesen");x.append(h("div",null,it.txt),h("div","hint",it.src+(it.who?" · "+it.who:"")+" · "+tm(it.ts)));k.onclick=()=>{const bb=BF(),n=Date.now();bb.r[it.id]=n;for(const q in bb.r)if(n-bb.r[q]>12*864e5)delete bb.r[q];save();render()};r.append(k,x);b.append(r)});
+ if(I.length>10)b.append(h("div","hint","+ "+(I.length-10)+" weitere"));const all=h("button","alt","Alles gelesen");all.onclick=()=>{const bb=BF();bb.t=Date.now();bb.r={};save();render()};b.append(all)}});
+/* ---- Einarbeitung ---- */
+const ONB_DEF=`## Organisatorisches
+Ordio: Verfügbarkeiten, Abwesenheiten, Arbeitszeiterfassung, nachträgliche Änderungen
+Gehalt & Vertrag: Zeitraum, Trinkgeld, Vertrag per Mail
+Benefits: 20% Rabatt auf alles, Wasser/Schorlen/Heißgetränke gratis während der Schicht, Was darf man mitnehmen?
+Hygiene-Schulung online Nachweis
+## Hygiene
+Händewaschen, sauberes Arbeiten
+Hygiene im Umgang mit Arbeitsutensilien, Besteck, Geschirr
+HACCP: Küche, Kaffeetheke, Laden
+Tischpflege: Wie oft und wann sollten Tische abgeräumt und gereinigt werden?
+Persönliche Hygiene: Richtlinien zur Sauberkeit und Kleidung der Mitarbeiter
+Welche Tätigkeiten sollen im Tagesverlauf gemacht werden? (Besteck auffüllen, Tische reinigen, Zuckerstreuer auffüllen)
+## Raumplan Einführung
+Raumplan: Welche Logik steckt hinter der Tischnummerierung?
+## Basis-Servicefähigkeiten
+Grundlagen der Kommunikation: Freundliche Begrüßung, Augenkontakt, Körpersprache, aktives Zuhören
+Umgang mit verschiedenen Gästetypen: Familien, Stammgäste, Gäste mit wenig Zeit (z. B. für to-go Bestellungen), etc.
+Reihenfolge des Service: Aufnahme der Bestellung von allen Gästen, Weiterleitung an die Küche/Barista, richtige Servierreihenfolge
+## Mobile Kasse Einführung
+Raumplan / Aufträge
+Tische zuweisen und ändern
+Bestellungen aufnehmen und Auswahl-Möglichkeiten
+Bezahlen Bar/Karte/Gutschein sowie Trinkgeldfunktion
+Getrennte Bezahlung einzelner Posten
+Kassenbon durch zwei/drei teilen
+## Hauptkasse Einführung
+Produkte bezahlen: Scannen / Suchen
+Pfand gutschreiben
+Bezahlen Bar/Karte/Gutschein sowie Trinkgeldfunktion
+Getrennte Bezahlung einzelner Posten
+Kassenbon durch zwei/drei teilen
+Bezahlen mit mehreren Zahlungsarten hintereinander (Gutschein + x)
+Rabattieren von Produkten
+Stornieren von bereits bezahlten Produkten
+Nachträglich Zahlungsart ändern
+Nachträglich Kassenbon ausdrucken & Bewirtungsbeleg
+Nachträglich Trinkgeld hinzufügen
+„Parken“ von Kassenbons / neuen Bon beginnen
+Verkauf von Gutscheinen
+## Zubereitung Heißgetränke
+Reihenfolge der Zubereitung von Bestellungen (erst Kuchen, dann Kalt, dann Heiß)
+Einführung Kaffeemühle (doppelte/einfache Menge)
+Einführung Siebträger (doppelt/einfach)
+Milchschaum-Zubereitung (Zieh- und Rollphase) mit Wasser und Tropfen Spüli
+Einführung Latte Art
+Erklärung und Zubereitung aller Heißgetränke
+Youtube-Tutorials zu Hause anschauen
+## Tägliche To Do's im Thekenbereich
+Getränke auffüllen, Gläser mit Zutaten auffüllen, Zuckerstreuer auffüllen, Besteckbehälter auf Tischen auffüllen (Messer, Gabeln, Servietten)
+## Keller Einführung
+Lagerraum Organisation: Wo steht was? (Servietten, Tüten, Desinfektion etc.)
+Toiletten: Wie füllt man Seifenspender und Papier nach? Toilettenpapier ausreichend?
+## Brotbestellungen
+Bei zu vielen Broten: Abbestellung von Broten für den nächsten Tag
+Brotbestellungen von Kunden: eintragen in Buch, bei Bedarf bestellen bei Ährensache
+## Auffüllen von unverpackten Produkten
+Lager-Organisation: Wo steht was / Erst Sack leeren / Berücksichtigung von MHD & Charge / Berücksichtigung von Allergenen / Bestellliste
+Prozess Wasch- und Reinigungsmittel nachfüllen
+## Abendprozess
+Rechtzeitiges Beginnen: Was kann ich ab wann schon beginnen, wenn Zeit dafür ist?
+Kaffeemaschinen-Reinigung
+Reinigung im Thekenbereich
+Reinigung im Küchenbereich
+Geschäftstagesabschluss auf mobiler & Hauptkasse
+Kassenschnitt mit EC-Gerät
+Pfand, Wachs, Kronkorken: Was sammeln wir und wo?`;
+const ik=s=>{let x=5381;for(const c of String(s)){x=((x<<5)+x+c.charCodeAt(0))|0}return"k"+(x>>>0).toString(36)};
+function parseTpl(t){const S=[];let c=null;String(t||"").split("\n").forEach(l=>{l=l.trim();if(!l)return;if(l.startsWith("##")){c={t:l.replace(/^#+\s*/,"")||"Allgemein",items:[]};S.push(c)}else{if(!c){c={t:"Allgemein",items:[]};S.push(c)}c.items.push(l)}});return S}
+const tplText=S=>S.map(s=>"## "+s.t+"\n"+s.items.join("\n")).join("\n");
+function onbTpl(){const d=(data.onboard||[]).filter(x=>x.kind==="tpl").sort((a,b)=>b.ts-a.ts)[0];return{doc:d,S:parseTpl(d?d.text:ONB_DEF)}}
+function onbCnt(pl,T){const it=pl.items||{};let a=0,b=0,n=0;T.S.forEach(s=>s.items.forEach(x=>{const k=ik(x);n++;if(it[k]&&it[k].a)a++;if(it[k]&&it[k].b)b++}));return[a,b,n]}
+function onbTog(pl,k,f){const it={...(pl.items||{})},cur={...(it[k]||{})},n=Date.now();
+ if(cur[f]){delete cur[f];delete cur[f+"By"];if(f==="a"){delete cur.b;delete cur.bBy}}else{cur[f]=n;cur[f+"By"]=cfg.name;if(f==="b"&&!cur.a){cur.a=n;cur.aBy=cfg.name}}
+ if(Object.keys(cur).length)it[k]=cur;else delete it[k];patch("onboard",pl.id,{items:it})}
+function onbPlan(v,pl,ad,T){const it=pl.items||{},c3=onbCnt(pl,T),a=c3[0],b=c3[1],n=c3[2];
+ if(ad){const bk=h("button","alt","‹ Alle Pläne");bk.onclick=()=>{A.ob=null;render()};v.append(bk)}
+ v.append(h("h2",null,"Einarbeitungsplan: "+pl.name));const hd=h("div","card");hd.append(h("div",null,"? Erklärt & verstanden: "+a+"/"+n),prog(a,n),h("div",null,"! Nochmal geprüft & läuft: "+b+"/"+n),prog(b,n));
+ if(pl.mentor||pl.start)hd.append(h("div","hint",(pl.mentor?"Einarbeitung durch "+pl.mentor:"")+(pl.mentor&&pl.start?" · ":"")+(pl.start?"seit "+dayL(pl.start):"")));v.append(hd);
+ const only=!!A.oo,fb=h("button","alt"+(only?" on":""),only?"Alle Punkte zeigen":"Nur offene Punkte");fb.onclick=()=>{A.oo=!A.oo;render()};v.append(fb);
+ T.S.forEach(sec=>{const ks=sec.items.map(ik),db=ks.filter(k=>it[k]&&it[k].b).length;if(only&&db===ks.length)return;v.append(h("h2",null,sec.t+" · "+db+"/"+ks.length));
+  sec.items.forEach((tx,i)=>{const k=ks[i],s=it[k]||{};if(only&&s.b)return;const r=h("div","card item"+(s.b?" done":"")),x=h("div","t");x.append(h("div",null,tx));const inf=[];if(s.a)inf.push("erklärt "+tm(s.a)+(s.aBy?" · "+s.aBy:""));if(s.b)inf.push("geprüft "+tm(s.b)+(s.bBy?" · "+s.bBy:""));if(inf.length)x.append(h("div","hint",inf.join(" · ")));r.append(x);
+   const b1=h("button",s.a?"fix":"alt","?"),b2=h("button",s.b?"fix":"alt","!"),bw=h("div");bw.style.cssText="display:flex;gap:6px;flex:none";b1.setAttribute("aria-label","Läuft? – erklärt und verstanden");b2.setAttribute("aria-label","Läuft! – nochmal überprüft");
+   if(ad){b1.onclick=()=>onbTog(pl,k,"a");b2.onclick=()=>onbTog(pl,k,"b")}else{b1.disabled=true;b2.disabled=true}bw.append(b1,b2);r.append(bw);v.append(r)})})}
+function oOnb(v){const ad=!!A.admin,me=cfg.sess.id,T=onbTpl(),P=data.onboard.filter(x=>x.kind==="plan").sort((a,b)=>b.ts-a.ts);
+ if(!ad){const pl=P.find(x=>x.uid===me);v.append(h("h2",null,"Einarbeitung"));if(!pl){v.append(h("div","empty","Für dich ist noch kein Einarbeitungsplan angelegt."));return}onbPlan(v,pl,false,T);return}
+ const open=A.ob&&P.find(x=>x.id===A.ob);if(open){onbPlan(v,open,true,T);if(A.mdl&&A.mdl.t==="onbtpl")v.append(onbModal(T));return}
+ v.append(h("h2",null,"Einarbeitungspläne"));if(!P.length)v.append(h("div","empty","Noch kein Plan. Unten einen neuen anlegen."));
+ P.forEach(pl=>{const c3=onbCnt(pl,T),c=h("div","card item"),x=h("div","t");x.append(h("div",null,pl.name),h("div","hint","erklärt "+c3[0]+"/"+c3[2]+" · geprüft "+c3[1]+"/"+c3[2]+(pl.mentor?" · "+pl.mentor:"")),prog(c3[1],c3[2]));c.append(x,trashBtn(()=>{logA("Einarbeitungsplan gelöscht: "+pl.name);del("onboard",pl.id)}));c.style.cursor="pointer";c.onclick=()=>{A.ob=pl.id;render()};v.append(c)});
+ v.append(h("h2",null,"Neuer Plan"));const have=new Set(P.map(x=>x.uid)),M=data.members.filter(m=>!m.deletedAt&&!have.has(m.id)).sort((a,b)=>(a.name||"").localeCompare(b.name||"","de")),sl=h("select"),mn=h("input"),di=h("input"),b=h("button","fix","Plan anlegen");
+ M.forEach(m=>{const o=h("option",null,m.name);o.value=m.id;sl.append(o)});mn.placeholder="Eingearbeitet von (optional)";mn.value=cfg.name||"";di.type="date";di.value=today();
+ b.onclick=async()=>{const m=data.members.find(x=>x.id===sl.value);if(!m)return toast("Alle Mitarbeiter haben schon einen Plan");if(await put("onboard",{kind:"plan",uid:m.id,name:m.name,mentor:mn.value.trim(),start:di.value,items:{},ts:Date.now()})){logA("Einarbeitungsplan: "+m.name);toast("Plan angelegt")}};
+ [sl,mn,di].forEach(e=>e.style.marginBottom="8px");v.append(sl,mn,di,b);
+ v.append(h("h2",null,"Verwaltung"));const e=h("button","alt","Vorlage bearbeiten ("+T.S.reduce((a,s)=>a+s.items.length,0)+" Punkte)");e.onclick=()=>{A.mdl={t:"onbtpl"};render()};
+ const ls=h("button","alt","Checklisten Abendprozess & Theke anlegen");ls.onclick=seedOnbLists;v.append(e,ls);ls.style.marginTop="8px";
+ if(A.mdl&&A.mdl.t==="onbtpl")v.append(onbModal(T))}
+function onbModal(T){return modal("Vorlage Einarbeitung",s=>{const ta=h("textarea");ta.rows=16;ta.value=tplText(T.S);s.append(h("div","hint","Zeile mit ## = neuer Abschnitt, jede weitere Zeile = ein Punkt. Der Fortschritt bleibt bei unveränderten Punkten erhalten."),ta);
+ const b=h("button","fix","Speichern"),rs=h("button","alt","Standard-Vorlage laden");b.style.marginTop="12px";rs.style.marginTop="8px";
+ b.onclick=async()=>{const t=ta.value.trim();if(!parseTpl(t).length)return toast("Bitte mindestens einen Punkt eingeben");if(T.doc)await patch("onboard",T.doc.id,{text:t,ts:Date.now()});else await put("onboard",{kind:"tpl",text:t,ts:Date.now()});logA("Einarbeitungs-Vorlage gespeichert");A.mdl=null;render()};rs.onclick=()=>{ta.value=ONB_DEF};s.append(b,rs)})}
+async function seedOnbLists(){const L=[["Abendprozess",["Rechtzeitig beginnen: Was kann schon vorbereitet werden?","Kaffeemaschine reinigen","Thekenbereich reinigen","Küchenbereich reinigen","Geschäftstagesabschluss auf mobiler & Hauptkasse","Kassenschnitt mit EC-Gerät","Pfand, Wachs, Kronkorken sammeln"]],["Theke täglich",["Getränke auffüllen","Gläser mit Zutaten auffüllen","Zuckerstreuer auffüllen","Besteckbehälter auf Tischen auffüllen (Messer, Gabeln, Servietten)","Tische abräumen und reinigen"]]];let n=0,t=Date.now();
+ for(const[title,items]of L){if(data.checklists.some(c=>c.title===title))continue;await put("checklists",{title,items,ts:t+n});n++}toast(n?n+" Checklisten angelegt":"Gibt es schon");logA("Checklisten aus Einarbeitung angelegt")}
+/* ---- Notfälle & Lösungen ---- */
+const EM_DEF=[["r","Verletzung, Schnitt, Verbrennung","Ruhe bewahren, Person nicht allein lassen\nErste Hilfe leisten (Verbandskasten)\nBei starker Blutung, Bewusstlosigkeit oder Atemnot sofort 112\nLeitung informieren\nUnfall dokumentieren, Gefahrenstelle sichern"],
+ ["r","Gast mit allergischer Reaktion oder Atemnot","Sofort 112 rufen\nGast nicht allein lassen, ruhig zusprechen\nNotfallmedikament des Gastes holen helfen, falls vorhanden\nSpeise und Zutaten sicherstellen, nichts wegwerfen\nLeitung informieren"],
+ ["r","Brand oder Rauch","Alarm geben, Gäste ruhig ins Freie führen\n112 rufen\nNur bei kleinem Brand und ohne Gefahr löschen\nTüren schließen, nicht zurückgehen\nAm Sammelplatz Vollzähligkeit prüfen, Leitung informieren"],
+ ["r","Gasgeruch","Keine Flamme, keine Schalter und Elektrogeräte betätigen\nFenster und Türen öffnen, Gashahn schließen wenn gefahrlos erreichbar\nGebäude verlassen, Gäste mitnehmen\nVon draußen 112 oder den Gasnotdienst rufen\nLeitung informieren"],
+ ["r","Gast wird krank (Verdacht auf Lebensmittelvergiftung)","Gast betreuen, bei starken Beschwerden 112\nBetroffene Speise und Getränke sicherstellen\nName und Kontakt des Gastes notieren, Vorfall mit Uhrzeit festhalten\nLeitung sofort informieren\nVerdächtige Ware nicht mehr ausgeben"],
+ ["r","Aggressiver oder bedrohlicher Gast","Ruhig bleiben, Abstand halten, nicht diskutieren\nKollegen dazuholen, Leitung informieren\nBei Drohung oder Gewalt 110 rufen\nEigene Sicherheit geht vor, nicht festhalten\nVorfall danach aufschreiben"],
+ ["r","Einbruch oder Diebstahl","Eigene Sicherheit zuerst, nicht hinterherlaufen\n110 rufen\nNichts anfassen, Zeit und Beobachtungen notieren\nLeitung informieren"],
+ ["y","Stromausfall","Kühlgeräte geschlossen halten, Uhrzeit notieren\nLeitung informieren, ggf. Elektriker\nTaschenlampen statt offene Flamme nutzen\nBestellungen schriftlich notieren, Gäste informieren\nNach Rückkehr Temperaturen prüfen und eintragen"],
+ ["y","Kasse, Kartengerät oder Internet fällt aus","Leitung informieren\nBestellungen auf Papier notieren\nWenn nur Karte ausfällt: Barzahlung anbieten\nSpäter sauber nachbuchen, Belege aufbewahren"],
+ ["y","Wasserschaden oder Rohrbruch","Hauptwasserhahn schließen\nStrom im nassen Bereich ausschalten\nRutschgefahr absichern, Fotos machen\nLeitung und Installateur informieren"],
+ ["y","Kühlung defekt oder Temperatur zu hoch","Temperatur prüfen und im Temperaturprotokoll eintragen\nWare im Zweifel nicht ausgeben, Leitung fragen\nWare in funktionierende Kühlung umlagern\nUnter Reparaturen melden"],
+ ["g","Gäste-Beschwerde","Zuhören, nicht unterbrechen, entschuldigen\nLösung anbieten (Ersatz, neu zubereiten)\nBei Eskalation oder Forderungen Leitung holen\nUnter Gäste-Feedback eintragen"]];
+async function seedEmerg(){let t=Date.now();for(const[sev,title,steps]of EM_DEF){await put("emerg",{sev,title,steps,ts:t++})}logA("Notfall-Vorlagen angelegt")}
+function emergModal(id){const e=data.emerg.find(x=>x.id===id)||{title:"",steps:"",sev:"y"};return modal(id?"Fall bearbeiten":"Neuer Fall",s=>{const t=h("input");t.placeholder="Situation (z. B. Gasgeruch)";t.value=e.title;const ta=h("textarea");ta.rows=9;ta.placeholder="Ein Schritt pro Zeile";ta.value=e.steps||"";const sv=sevSel();sv.value=e.sev||"y";
+ const b=h("button","fix","Speichern");b.style.marginTop="12px";[t,ta,sv].forEach(x=>x.style.marginBottom="8px");b.onclick=async()=>{const title=t.value.trim(),steps=ta.value.split("\n").map(x=>x.trim()).filter(Boolean).join("\n");if(!title||!steps)return toast("Titel und mindestens einen Schritt eingeben");
+ if(id)await patch("emerg",id,{title,steps,sev:sv.value});else await put("emerg",{title,steps,sev:sv.value,ts:Date.now()});logA("Notfall-Fall gespeichert: "+title);A.mdl=null;render()};s.append(t,ta,sv,b)})}
+function oEmerg(v){const ad=!!A.admin,L=data.emerg.slice().sort((a,b)=>SO[a.sev||"y"]-SO[b.sev||"y"]||a.ts-b.ts);
+ const bx=h("div","card hot");bx.append(h("div",null,"Lebensgefahr, Brand, Gasgeruch: zuerst 112 anrufen, danach die Leitung informieren."));v.append(bx);
+ if(!L.length)v.append(h("div","empty",ad?"Noch keine Fälle angelegt.":"Noch keine Anleitungen – die Leitung kann sie hier anlegen."));
+ if(ad&&!L.length){const b=h("button","alt","Standard-Fälle laden (Vorlage zum Anpassen)");b.onclick=seedEmerg;v.append(b)}
+ L.forEach(e=>{const c=h("details","card"+(e.sev==="r"?" hot":"")),sm=h("summary");sm.append(sevDot(e.sev||"y"),document.createTextNode(e.title||""));c.append(sm);const ol=h("ol");String(e.steps||"").split("\n").map(x=>x.trim()).filter(Boolean).forEach(x=>ol.append(h("li",null,x)));c.append(ol);
+  if(ad){const r=h("div","row"),eb=h("button","alt","Bearbeiten");eb.onclick=()=>{A.mdl={t:"emerg",id:e.id};render()};r.append(eb,trashBtn(()=>{logA("Notfall-Fall gelöscht: "+e.title);del("emerg",e.id)}));c.append(r)}v.append(c)});
+ if(ad&&L.length){const b=h("button","fix","Neuer Fall");b.onclick=()=>{A.mdl={t:"emerg",id:""};render()};v.append(b)}
+ if(typeof SM!=="undefined"&&SM&&!off("ai")){const b=h("button","alt","Schnorki fragen");b.onclick=openAi;v.append(b);b.style.marginTop="8px"}
+ if(!off("contacts"))oMod(v,"contacts");if(A.mdl&&A.mdl.t==="emerg")v.append(emergModal(A.mdl.id))}
 /* ---- Module ---- */
 const ST3=[["open","Offen"],["doing","In Arbeit"],["done","Erledigt"]],ST2=[["open","Offen"],["done","Erledigt"]];
 const MODS={handover:{t:"Schichtübergabe",c:"handover",ph:"Was muss die nächste Schicht wissen?"},
  repair:{t:"Reparaturen & technische Probleme",c:"repairs",ph:"Was ist kaputt / funktioniert nicht?",states:ST3,urgent:1},
  orders:{t:"Änderungen & Bestellannahme",c:"orders",ph:"Änderung / Bestellung / Gästewunsch",states:ST2},
  feedback:{t:"Gäste-Feedback & Reklamationen",c:"feedback",ph:"Was hat der Gast gesagt?",cats:["Lob","Reklamation","Allergie/Wunsch","Sonstiges"],states:ST2},
- events:{t:"Events, Catering, Reservierungen",c:"events",ph:"Event / Reservierung (Personen, Wünsche)",date:1},
+ events:{t:"Besondere Termine, Events, Catering",c:"events",ph:"Termin / Event / Reservierung (Personen, Wünsche)",date:1,sec:"Vorbereitung (was ist vorher zu tun?)"},
+ news:{t:"News fürs Team",c:"news",ph:"Neuigkeit fürs Team (neue Karte, Regeln, Termine …)",cats:["Info","Wichtig","Neu im Angebot","Regel"],admin:1},
  absence:{t:"Ausfall melden (Anruf)",c:"absence",ph:"Wer fällt aus? Grund / bis wann",date:1,hot:1,states:ST2},
  ideas:{t:"Pinnwand: Ideen, Schulung, Besprechung",c:"ideas",ph:"Vorschlag oder Thema",cats:["Idee","Schulung","Einarbeitung","Teambesprechung"],votes:1},
  offers:{t:"Angebot & Preise",c:"offers",ph:"Produkt / Änderung",sec:"Preis",admin:1},
@@ -423,7 +652,7 @@ function validate(){const s=cfg.sess;A.ok=false;A.admin=false;
  if(!A.ok&&s&&C){delete cfg.sess;cfg.name="";save()}
  if(A.ok)startData();render()}
 function listen(c,lim){cols[c]=DB.collection(c);cols[c].orderBy("ts","desc").limit(lim||300).onSnapshot(s=>{data[c]=s.docs.map(d=>({id:d.id,...d.data()}));if(c==="requests")popup();if(c==="members")purge();if(!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},e=>{S.err="Lesen "+c+": "+((e&&(e.code||e.message))||"")})}
-function startData(){if(!A.st){A.st=true;["notes","tasks","reports","requests","recipes","rgroups","rules","checklists","checks","plan","offs","stock","tdev","temps","handover","repairs","feedback","orders","events","ideas","absence","offers","contacts"].forEach(c=>listen(c));DB.collection("config").doc("dev").onSnapshot(x=>{DEV=x.exists?x.data():null;if(tab==="set"&&A.sset==="dev"&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});DB.collection("config").doc("flags").onSnapshot(x=>{FL=x.exists?(x.data()||{}):{};if(!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});DB.collection("layout").doc("home").onSnapshot(x=>{LAY=x.exists?x.data():null;if(!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});
+function startData(){if(!A.st){A.st=true;["notes","tasks","reports","requests","recipes","rgroups","rules","checklists","checks","plan","offs","stock","tdev","temps","handover","repairs","feedback","orders","events","ideas","absence","offers","contacts","news","onboard","emerg"].forEach(c=>listen(c));DB.collection("config").doc("dev").onSnapshot(x=>{DEV=x.exists?x.data():null;if(tab==="set"&&A.sset==="dev"&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});DB.collection("config").doc("flags").onSnapshot(x=>{FL=x.exists?(x.data()||{}):{};if(!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});DB.collection("layout").doc("home").onSnapshot(x=>{LAY=x.exists?x.data():null;if(!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},()=>{});
   setInterval(()=>{if(A.ok&&!document.hidden)DB.collection("members").doc(cfg.sess.id).update({lastSeen:Date.now()}).catch(()=>{});if(A.ok&&tab==="adm"&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))render()},60000);
   document.addEventListener("visibilitychange",()=>{if(A.ok)DB.collection("members").doc(cfg.sess.id).update({lastSeen:document.hidden?0:Date.now()}).catch(()=>{})})}
  if(A.admin&&!A.ad){A.ad=true;listen("members");listen("shifts",2000);if(isOwner())listen("aihist",500);listen("audit",400)}
@@ -475,7 +704,7 @@ async function setBiz(p){if(p.length<4)return toast("Mindestens 4 Zeichen");try{
 async function setPass(id,p){if(!id)return toast("Mitarbeiter wählen");if(id===ADM)return toast("Dieses Passwort kann nur der Entwickler selbst ändern");
  try{const g=await gen(id);await DB.collection("gens").doc(id).set({g:g+1,ts:Date.now()});await DB.collection("members").doc(id).delete();logA("Passwort zurückgesetzt (Neu-Registrierung): "+id);toast("Fertig – der Mitarbeiter registriert sich mit demselben Namen neu und wählt ein neues Passwort")}catch(e){toast("Speichern nicht möglich")}}
 async function setAdmins(a){try{await DB.collection("config").doc("main").update({admins:a});logA("Admin-Liste geändert");toast("Gespeichert")}catch(e){toast("Nicht erlaubt (Editor-Rechte nötig)")}}
-async function toggleShift(){if(A.shBusy)return;A.shBusy=true;setTimeout(()=>{A.shBusy=false},1200);const on=!A.shift,now=Date.now(),mr=DB.collection("members").doc(cfg.sess.id);A.shift=on;if(on)A.sts=now;render();
+async function toggleShift(){if(A.shBusy)return;A.shBusy=true;setTimeout(()=>{A.shBusy=false},1200);const on=!A.shift,now=Date.now(),mr=DB.collection("members").doc(cfg.sess.id);A.shift=on;if(on)A.sts=now;if(on){const n=briefItems().length;if(n)setTimeout(()=>toast(n+(n>1?" neue Infos":" neue Info")+" seit deiner letzten Schicht – siehe Heute"),700)}render();
  try{if(on){const sid=nid();A.sid=sid;await DB.collection("shifts").doc(sid).set({uid:cfg.sess.id,name:cfg.name,start:now,end:0,ts:now});await mr.update({onShift:true,shiftTs:now,shiftId:sid})}
  else{const sid=A.sid;if(sid)await DB.collection("shifts").doc(sid).update({end:now});else await DB.collection("shifts").doc(nid()).set({uid:cfg.sess.id,name:cfg.name,start:A.sts||now,end:now,ts:A.sts||now});A.sid=null;await mr.update({onShift:false,shiftTs:now,shiftId:""})}}
  catch(e){toast("Schicht nicht gespeichert")}}
@@ -526,7 +755,7 @@ const INSTR="Du bist Schnorki, der freundliche KI-Assistent im Team-Board eines 
 const TOOLS=[
  {name:"add_task",description:"Legt eine Aufgabe im Team-Board an. date im Format YYYY-MM-DD (Standard: heute). Gibt 'ok' zurück.",inputSchema:{type:"object",properties:{text:{type:"string"},date:{type:"string"}},required:["text"]},execute:async i=>{if(!await addTask(String(i.text||""),/^\d{4}-\d\d-\d\d$/.test(i.date||"")?i.date:today()))throw new Error("Speichern nicht möglich");return"ok"}},
  {name:"add_note",description:"Postet eine Notiz an das ganze Team. cat: hot (dringend), info, menu oder buy. Gibt 'ok' zurück.",inputSchema:{type:"object",properties:{text:{type:"string"},cat:{type:"string",enum:["hot","info","menu","buy"]}},required:["text"]},execute:async i=>{if(!await addNote(String(i.text||""),["hot","info","menu","buy"].includes(i.cat)?i.cat:"info"))throw new Error("Speichern nicht möglich");return"ok"}},
- {name:"report_problem",description:"Sendet ein Problem (type problem) oder einen Vorschlag (type idea) an die Leitung. Gibt 'ok' zurück.",inputSchema:{type:"object",properties:{text:{type:"string"},type:{type:"string",enum:["problem","idea"]}},required:["text"]},execute:async i=>{if(!await put("reports",{text:String(i.text||"").slice(0,1000),type:i.type==="idea"?"idea":"problem",who:cfg.name,whoId:cfg.sess.id,ts:Date.now(),done:false}))throw new Error("Speichern nicht möglich");return"ok"}},
+ {name:"report_problem",description:"Sendet ein Problem (type problem) oder einen Vorschlag (type idea) an die Leitung. Gibt 'ok' zurück.",inputSchema:{type:"object",properties:{text:{type:"string"},type:{type:"string",enum:["problem","idea"]},sev:{type:"string",enum:["r","y","g"],description:"Nur bei Problem: r = Notfall, sofort; y = Lösung innerhalb von 3 Tagen; g = nur zur Info, nicht dringend"}},required:["text"]},execute:async i=>{if(!await sendRep(String(i.text||"").slice(0,1000),i.type==="idea"?"idea":"problem",i.sev))throw new Error("Speichern nicht möglich");return"ok"}},
  {name:"add_recipe",description:"Speichert ein Rezept in der Rezeptsammlung. Erst aufrufen, nachdem der Mitarbeiter die Gruppe genannt hat. Gibt 'ok' zurück.",inputSchema:{type:"object",properties:{title:{type:"string"},group:{type:"string",description:"Name einer vorhandenen Gruppe exakt wie im Kontext, oder \"ohne\" wenn der Mitarbeiter keine Gruppe will"},ingredients:{type:"string",description:"Eine Zutat pro Zeile mit Menge"},steps:{type:"string",description:"Zubereitungsschritte, nummeriert, eine pro Zeile"},note:{type:"string"}},required:["title","group","ingredients","steps"]},execute:async i=>{const title=String(i.title||"").trim().slice(0,120);if(!title)throw new Error("Titel fehlt");const g=findG(i.group);if(!await put("recipes",{title,group:g,ingredients:String(i.ingredients||"").slice(0,4000),steps:String(i.steps||"").slice(0,6000),note:String(i.note||"").slice(0,1000),by:cfg.name,byId:cfg.sess.id,ts:Date.now(),src:"ai"}))throw new Error("Speichern nicht möglich");return"ok"}},
  {name:"get_recipe",description:"Liest ein gespeichertes Rezept vollständig (id aus der Rezeptliste im Kontext).",inputSchema:{type:"object",properties:{id:{type:"string"}},required:["id"]},execute:async i=>{const r=data.recipes.find(x=>x.id===i.id);if(!r)throw new Error("Rezept nicht gefunden");return JSON.stringify({id:r.id,title:r.title,group:gName(r.group)||"ohne",ingredients:r.ingredients||"",steps:r.steps||"",note:r.note||""})}},
  {name:"edit_recipe",description:"Ändert ein vorhandenes Rezept. NUR auf ausdrücklichen Wunsch des Mitarbeiters. Nur die zu ändernden Felder angeben; Textfelder immer vollständig neu (nicht nur den geänderten Teil). Gibt 'ok' zurück.",inputSchema:{type:"object",properties:{id:{type:"string"},title:{type:"string"},group:{type:"string",description:"Name einer vorhandenen Gruppe oder \"ohne\""},ingredients:{type:"string"},steps:{type:"string"},note:{type:"string"}},required:["id"]},execute:async i=>{const r=data.recipes.find(x=>x.id===i.id);if(!r)throw new Error("Rezept nicht gefunden");const p={};if(i.title!=null&&String(i.title).trim())p.title=String(i.title).trim().slice(0,120);if(i.group!=null)p.group=findG(i.group);if(i.ingredients!=null)p.ingredients=String(i.ingredients).slice(0,4000);if(i.steps!=null)p.steps=String(i.steps).slice(0,6000);if(i.note!=null)p.note=String(i.note).slice(0,1000);if(!Object.keys(p).length)throw new Error("Keine Änderung angegeben");p.upd=Date.now();p.editedBy=cfg.name;await patch("recipes",r.id,p);return"ok"}}];
@@ -581,7 +810,8 @@ function vGate(v){const w=h("div","login");const t1=h("h1",null,"Team-Board");t1
  if(gm==="reg"){p("Neu hier? Lege dein Konto an.");const f=mk("Vorname"),l=mk("Nachname"),pw=mk("Passwort wählen",1),bz=mk("Geschäftspasswort",1),go=()=>register(f.value,l.value,pw.value,bz.value);enter_(bz,go);btn("Registrieren").onclick=go;return}
  if(cfg.last&&!A.other){if(cfg.multi&&(cfg.accts||[]).length>1){const cr=h("div","chips");cr.style.flexWrap="wrap";cfg.accts.forEach(a=>{const c=h("button","alt"+(a.id===cfg.last.id?" on":""),a.name);c.onclick=()=>{cfg.last={id:a.id,name:a.name};save();render()};cr.append(c)});w.append(cr)}w.append(h("div","av",cfg.last.name.split(" ").map(x=>x[0]).slice(0,2).join("").toUpperCase()),h("div","nm",cfg.last.name));const pw=mk("Passwort",1),go=()=>login("","",pw.value,1);enter_(pw,go);btn("Anmelden").onclick=go;btn(cfg.multi&&(cfg.accts||[]).length<MAXA?"Konto hinzufügen":"Anderes Konto",1).onclick=()=>{A.other=true;render()};const rg=h("button","x","Registrierung");rg.style.cssText="display:block;margin:40px auto 0";rg.onclick=()=>{A.gm="reg";render()};w.append(rg);if(cfg.multi){const rm=h("button","x","Von diesem Gerät entfernen");rm.style.cssText="display:block;margin:14px auto 0";twoStep(rm,"Von diesem Gerät entfernen",()=>{cfg.accts=(cfg.accts||[]).filter(a=>a.id!==cfg.last.id);cfg.last=cfg.accts[0]||null;if(!cfg.last)delete cfg.last;save();render()});w.append(rm)}return}
  const f=mk("Vorname"),l=mk("Nachname"),pw=mk("Passwort",1),go=()=>login(f.value,l.value,pw.value);enter_(pw,go);btn("Anmelden").onclick=go;if(cfg.last)btn("Zurück",1).onclick=()=>{A.other=false;render()}}
-function repCard(x,adm){const c=h("div","card"+(x.type==="problem"?" hot":"")+(x.done?" done":""));c.append(h("div","t",x.text));const m=h("div","meta");{const sp0=h("span",null,(x.who||"?")+" · "+(x.type==="problem"?"Problem":"Vorschlag")+" · "+tm(x.ts));sp0.append(rc(x));m.append(sp0)}
+function repCard(x,adm){const c=h("div","card"+(x.type==="problem"&&x.sev==="r"?" hot":"")+(x.done?" done":""));c.append(h("div","t",x.text));const m=h("div","meta");{const sp0=h("span",null,(x.who||"?")+" · "+(x.type==="problem"?"Problem"+(x.sev?" "+SEVE[x.sev]:""):"Vorschlag")+" · "+tm(x.ts));sp0.append(rc(x));m.append(sp0)}
+ if(x.type==="problem"&&x.sev&&!x.done){const dl=x.sev==="y"?x.ts+3*864e5:0,late=dl&&Date.now()>dl;c.insertBefore(h("div","hint",SEVE[x.sev]+" "+sevL(x.sev)+(dl?" · bis "+dlab(dl)+(late?" – überfällig!":""):"")),c.firstChild.nextSibling);if(late)c.classList.add("hot")}
  if(adm){const b=h("button","x",x.done?"Offen":"Erledigt");b.onclick=()=>markDone("reports",x);m.append(b)}c.append(m);return c}
 const gName=id=>(data.rgroups.find(g=>g.id===id)||{}).name||"",sortedG=()=>data.rgroups.slice().sort((a,b)=>(a.name||"").localeCompare(b.name||"","de"));
 let rcf="all",rq="";
@@ -634,9 +864,9 @@ function vRec(v){v.append(hero("Rezepte","Gemeinsame Rezeptsammlung"));
   v.append(modal(m.gid==="none"?"Ohne Gruppe":gName(m.gid)||"Gruppe",s=>{if(!L.length)s.append(h("p","hint","Noch keine Rezepte in dieser Gruppe."));L.forEach(r=>s.append(recCard(r)));const b=h("button","alt","+ Rezept in dieser Gruppe");b.style.cssText="margin-top:14px;width:100%";b.onclick=()=>newForm(m.gid==="none"?"":m.gid);s.append(b)}))}}
 function vRep(v){v.append(hero("Melden","Vorschläge und Probleme direkt an die Leitung"));
  const sl=h("select");[["idea","Vorschlag"],["problem","Problem"]].forEach(([k,l])=>{const o=h("option",null,l);o.value=k;sl.append(o)});
- const ta=h("textarea");ta.placeholder="Beschreibe kurz, worum es geht…";const b=h("button","fix","Senden");
- b.onclick=async()=>{const t=ta.value.trim();if(t&&await put("reports",{text:t,type:sl.value,who:cfg.name,whoId:cfg.sess.id,ts:Date.now(),done:false}))toast("Gesendet – danke!")};
- const r=h("div","row");r.append(sl,b);v.append(ta,r,h("h2",null,"Meine Meldungen"));
+ const ta=h("textarea");ta.placeholder="Beschreibe kurz, worum es geht…";const b=h("button","fix","Senden"),ss=sevSel();ss.style.display="none";ss.style.marginBottom="8px";sl.onchange=()=>{ss.style.display=sl.value==="problem"?"":"none"};
+ b.onclick=async()=>{const t=ta.value.trim();if(t&&await sendRep(t,sl.value,ss.value))ta.value=""};
+ const r=h("div","row");r.append(sl,b);v.append(ta,ss,r,h("h2",null,"Meine Meldungen"));
  const L=data.reports.filter(x=>x.whoId===cfg.sess.id);if(!L.length)v.append(h("div","empty","Noch nichts gesendet"));L.forEach(x=>v.append(repCard(x)))}
 const DAYMS=864e5,CAP=14*36e5;
 const durS=(s,a,b)=>{const en=s.end||Math.min(Date.now(),s.start+CAP);return Math.max(0,Math.min(en,b)-Math.max(s.start,a))};
@@ -654,7 +884,7 @@ function userModal(uid){const m=data.members.find(x=>x.id===uid)||{name:"?"};ret
  s.append(h("div","hint","Insgesamt "+fmtH(st.all)+" h in "+st.n+" Schichten"+(st.n?" · Ø "+fmtH(st.all/st.n)+" h pro Schicht":"")));
  s.append(h("div","rc-h","Schichten in diesem Monat"));const m0=pers().month[0],L=data.shifts.filter(x=>x.uid===uid&&x.start>=m0).sort((a,b)=>b.start-a.start);
  if(!L.length)s.append(h("div","empty","Noch keine Schichten in diesem Monat"));L.forEach(x=>s.append(shiftRow(x,false)))})}
-const DEVK=[["ai","Schnorki (KI-Assistent)"],["voice","Spracheingabe (Mikrofon)"],["tts","Sprachausgabe von Schnorki"],["photo","Foto-Funktionen"],["rec","Rezepte"],["rep","Melden"],["cal","Kalender"],["shift","Schicht-Button"],["lists","Checklisten"],["plan","Dienstplan"],["stock","Einkaufsliste"],["temp","Temperaturprotokoll"],["handover","Schichtübergabe"],["repair","Reparaturen"],["orders","Bestellannahme"],["feedback","Gäste-Feedback"],["events","Events & Catering"],["absence","Ausfall melden"],["ideas","Pinnwand (Ideen)"],["offers","Angebot & Preise"],["contacts","Notfall-Nummern"]];
+const DEVK=[["ai","Schnorki (KI-Assistent)"],["voice","Spracheingabe (Mikrofon)"],["tts","Sprachausgabe von Schnorki"],["photo","Foto-Funktionen"],["rec","Rezepte"],["rep","Melden"],["cal","Kalender"],["shift","Schicht-Button"],["lists","Checklisten"],["plan","Dienstplan"],["stock","Einkaufsliste"],["temp","Temperaturprotokoll"],["handover","Schichtübergabe"],["repair","Reparaturen"],["orders","Bestellannahme"],["feedback","Gäste-Feedback"],["events","Events & Catering"],["absence","Ausfall melden"],["ideas","Pinnwand (Ideen)"],["offers","Angebot & Preise"],["contacts","Notfall-Nummern"],["news","News fürs Team"],["onb","Einarbeitung"],["emerg","Notfälle & Lösungen"],["brief","Neu seit letzter Schicht"]];
 const ASUB=[["users","Benutzer"],["shifts","Schichten"],["reports","Meldungen"],["site","Website"],["wid","Widgets"],["ai","Schnorki"],["adm","Admins"],["log","Protokoll"]];
 function vAdm(v){v.append(hero("Admin","Verwaltung & Überblick"));const isDev=cfg.sess&&cfg.sess.id===ADM,AS=ASUB.filter(x=>x[0]!=="ai"||isOwner()).concat(isDev?[["dev","Entwickler"]]:[]),sub=AS.some(x=>x[0]===A.asub)?A.asub:"users",nav=h("div","chips nv");
  AS.forEach(([k,l])=>{const b=h("button","alt"+(sub===k?" on":""),l);b.onclick=()=>{A.asub=k;A.mdl=null;render()};nav.append(b)});v.append(nav);
@@ -674,7 +904,7 @@ function vAdm(v){v.append(hero("Admin","Verwaltung & Überblick"));const isDev=c
  else if(sub==="reports"){v.append(h("h2",null,"Vorschläge & Probleme"));
   const ch=h("div","chips");[["all","Alle"],["idea","Vorschläge"],["problem","Probleme"]].forEach(([k,t])=>{const b=h("button","alt"+(rf===k?" on":""),t);b.onclick=()=>{rf=k;render()};ch.append(b)});v.append(ch);
   const sw=h("select"),o0=h("option",null,"Alle Mitarbeiter");o0.value="";sw.append(o0);[...new Set(data.reports.map(x=>x.whoId))].forEach(id=>{const o=h("option",null,(data.reports.find(x=>x.whoId===id)||{}).who||id);o.value=id;sw.append(o)});sw.value=rw;sw.onchange=()=>{rw=sw.value;render()};sw.style.marginBottom="10px";v.append(sw);
-  const L=data.reports.filter(x=>(rf==="all"||x.type===rf)&&(!rw||x.whoId===rw));if(!L.length)v.append(h("div","empty","Keine Meldungen"));L.forEach(x=>v.append(repCard(x,1)))}
+  const L=data.reports.filter(x=>(rf==="all"||x.type===rf)&&(!rw||x.whoId===rw)).sort((a,b)=>(a.done-b.done)||(repRank(a)-repRank(b))||b.ts-a.ts);if(!L.length)v.append(h("div","empty","Keine Meldungen"));L.forEach(x=>v.append(repCard(x,1)))}
  else if(sub==="site"){v.append(h("h2",null,"Geschäftspasswort ändern"));{const i=h("input");i.type="password";i.placeholder="Neues Geschäftspasswort";const b=h("button","fix","Ändern");b.onclick=()=>setBiz(i.value);const w=h("div","row");w.append(i,b);v.append(w)}
   v.append(h("div","hint","Dieses Passwort brauchen neue Mitarbeiter bei der Registrierung."));
   v.append(h("h2",null,"App teilen"));v.append(h("div","hint","Den Link zur App kannst du über das Teilen-Menü von Claude weitergeben. Neue Mitarbeiter registrieren sich selbst mit Vor- und Nachname, eigenem Passwort und dem Geschäftspasswort."));
