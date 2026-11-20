@@ -116,9 +116,18 @@ nav .nbd{position:absolute;top:5px;left:calc(50% + 4px)}
  main{max-width:1040px;padding-bottom:100px}body.in #mic,body.in #ai{bottom:24px}body.in #toast{bottom:90px;left:calc(50% + 118px)}
  #v[data-tab=today]{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;align-items:start}#v[data-tab=today]>*{grid-column:1/-1}#v[data-tab=today]>.wg{grid-column:auto}
  .tiles{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+[data-wp="grid"]{background-image:linear-gradient(var(--wl) 1px,transparent 1px),linear-gradient(90deg,var(--wl) 1px,transparent 1px);background-size:32px 32px}
+[data-wp="dots"]{background-image:radial-gradient(var(--wl) 1.4px,transparent 1.7px);background-size:22px 22px}
+[data-wp="glow"]{background-image:radial-gradient(60% 45% at 12% 0%,var(--wg),transparent 70%),radial-gradient(55% 45% at 100% 100%,var(--wg),transparent 70%)}
+[data-wp="rings"]{background-image:repeating-radial-gradient(circle at 100% 0,transparent 0 26px,var(--wl) 26px 27px)}
+[data-wp="diag"]{background-image:repeating-linear-gradient(135deg,transparent 0 15px,var(--wl) 15px 16px)}
+body[data-wp]{background-attachment:fixed}
+.wpg{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;margin:6px 0}.wpb{background:transparent;border:2px solid var(--bd);border-radius:14px;padding:8px;color:var(--tx);display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;text-align:center}.wpb.on{border-color:var(--ac)}
+.wpv{height:48px;border-radius:8px;border:1px solid var(--bd);background-color:var(--bg)}
+.cl-v{font-weight:700;font-size:15px;margin:16px 0 4px}.cl-d{font-size:12px;color:var(--mut);font-weight:400;margin-left:8px}.cl ul{margin:6px 0 0 18px;padding:0}.cl li{margin:5px 0;list-style:disc}
 @media (min-width:700px){main{max-width:920px;padding:0 32px 150px}.wgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;align-items:start}nav{left:50%;right:auto;transform:translateX(-50%);width:100%;max-width:920px;border-left:1px solid var(--bd);border-right:1px solid var(--bd)}.mdl>div{max-width:640px;border-radius:16px}.mdl{align-items:center}#mic{right:max(20px,calc(50% - 440px))}.hero{padding-top:48px}.hero h1{font-size:32px}}@media (min-width:1100px){main{max-width:1180px}.wgrid{grid-template-columns:repeat(3,minmax(0,1fr))}nav{max-width:1180px}#mic{right:max(20px,calc(50% - 570px))}}@media (min-width:700px) and (orientation:landscape) and (max-height:600px){#v .hero{padding-top:20px}}
 </style></head>
-<body><div id="bn" role="note" style="display:none">Dies ist nur eine Testversion der App. Bei Problemen bitte an den Entwickler wenden. · Version al0.49.014f</div><main id="v"></main>
+<body><div id="bn" role="note" style="display:none">Dies ist nur eine Testversion der App. Bei Problemen bitte an den Entwickler wenden. · Version al0.50.003f</div><main id="v"></main>
 <div id="toast"></div>
 <button id="mic" aria-label="Sprachbefehl"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
 <nav id="nav"></nav><aside id="sb" aria-label="Navigation"></aside><div id="mn" role="dialog" aria-label="Menü"></div>
@@ -201,7 +210,24 @@ const TH={
 },THK=["bg","card","tx","mut","ac","on","ac2","bd","hot","onh","sr","sy","sg"];
 const applyTheme=()=>{const r=document.documentElement,t=TH[cfg.theme];THK.forEach(k=>r.style.removeProperty("--"+k));r.style.removeProperty("color-scheme");
  if(t){THK.forEach(k=>r.style.setProperty("--"+k,t[k]));r.style.colorScheme=t.dk?"dark":"light";r.setAttribute("data-theme",t.dk?"dark":"light")}else if(cfg.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",cfg.theme==="dark"?"dark":"light");
- try{let m=document.querySelector("meta[name=theme-color]");if(!m){m=document.createElement("meta");m.name="theme-color";document.head.append(m)}m.content=(getComputedStyle(r).getPropertyValue("--bg")||"#ffffff").trim()}catch(e){}};applyTheme();
+ try{let m=document.querySelector("meta[name=theme-color]");if(!m){m=document.createElement("meta");m.name="theme-color";document.head.append(m)}m.content=(getComputedStyle(r).getPropertyValue("--bg")||"#ffffff").trim()}catch(e){}applyWall()};
+
+const APPV="al0.50.003f";
+const CHANGELOG=[
+ {v:"al0.50.003f",d:"20.11.2026",t:["Neue Hintergründe: Raster, Punkte, Lichtschein, Ringe und Schräg – unter Einstellungen → Design","Nach jedem Update zeigt die App, was neu ist","Versionsverlauf jederzeit unter Einstellungen → „Was ist neu?“"]},
+ {v:"al0.49.014f",d:"20.11.2026",t:["Neues Menü: 5 Hauptpunkte unten, „Menü“ mit Suche und Zählern, Seitenleiste auf Tablets, Kacheln im Bereich Betrieb","6 neue Farbstile: Sand, Ozean, Rosé, Wald, Mitternacht und Kontrast","Kalender auf Tablets kompakt, mit Tagesdetails daneben","Events und Termine jetzt im Kalender: mit Uhrzeit, Vorbereitung als Checkliste und Agenda für 30 Tage"]},
+ {v:"al0.48.011f",d:"19.11.2026",t:["Dienstplan neu: Wochenraster, Tagesansicht mit Besetzung, „Meine Schichten“, Tausch, Vorwoche kopieren und Plan teilen","Einarbeitungsplan mit „?“ (erklärt) und „!“ (geprüft) für jeden Punkt","News fürs Team und „Neu seit deiner letzten Schicht“","Notfälle & Lösungen mit Schritt-für-Schritt-Anleitungen","Probleme in 3 Stufen: Rot (sofort), Gelb (3 Tage), Grün (Info)"]},
+ {v:"al0.47.001f",d:"19.11.2026",t:["Foto-Auswahl (Galerie und Kamera) in der App repariert"]},
+ {v:"al0.46.003f",d:"19.11.2026",t:["Schnorki wechselt bei Überlastung automatisch auf ein anderes KI-Modell","Fehlergrund wird in der Meldung angezeigt"]},
+ {v:"al0.45.001f",d:"18.11.2026",t:["Automatische App-Updates: Die App meldet neue Versionen und installiert sie auf Wunsch"]}];
+function showChangelog(){if(document.getElementById("clm"))return;const o=h("div","mdl"),sh=h("div","cl"),hd=h("div","mdl-h"),x=h("button","alt","Schließen");o.id="clm";const close=()=>{o.remove()};x.onclick=close;o.onclick=e=>{if(e.target===o)close()};
+ hd.append(h("b",null,"Neu in "+APPV),x);sh.append(hd);CHANGELOG.forEach((c,i)=>{const t=h("div","cl-v",c.v),d=h("span","cl-d",c.d);t.append(d);const ul=h("ul");c.t.forEach(z=>ul.append(h("li",null,z)));if(i===0){sh.append(t,ul)}else{const dt=h("details");const sm=h("summary");sm.append(c.v+" · "+c.d);dt.append(sm,ul);sh.append(dt)}});
+ const ok=h("button","fix","Los geht’s");ok.style.cssText="margin-top:16px;width:100%";ok.onclick=close;sh.append(ok);o.append(sh);document.body.append(o)}
+function chkChangelog(){if(!A.ok||A.clShown||cfg.seenV===APPV)return;A.clShown=true;cfg.seenV=APPV;save();setTimeout(showChangelog,500)}
+const hexRgb=c=>{c=String(c).trim();let m=/^#([0-9a-f]{6})$/i.exec(c);if(m){const n=parseInt(m[1],16);return[n>>16&255,n>>8&255,n&255]}m=c.match(/[\d.]+/g);return m?m.slice(0,3).map(Number):[128,128,128]};
+function applyWall(){try{const r=document.documentElement,cs=getComputedStyle(r),t=hexRgb(cs.getPropertyValue("--tx")),a=hexRgb(cs.getPropertyValue("--ac"));r.style.setProperty("--wl","rgba("+t.join(",")+",.07)");r.style.setProperty("--wg","rgba("+a.join(",")+",.09)");document.body.dataset.wp=cfg.wall&&cfg.wall!=="none"?cfg.wall:""}catch(e){}}
+try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>applyTheme())}catch(e){}
+applyTheme();
 
 let LAY=null,PL=null,FL={};const off=k=>!!(FL.off&&FL.off[k]);const S={err:"",db:false};let DB=null,C=undefined,U=null,rf="all",rw="";const A={ok:false,admin:false,st:false,ad:false,shift:false,gen:new Set(),dis:new Set(),codes:{}};let cols={},data={notes:[],tasks:[],reports:[],members:[],requests:[],recipes:[],rgroups:[],rules:[],shifts:[],aihist:[],checklists:[],checks:[],plan:[],offs:[],stock:[],tdev:[],temps:[],audit:[],handover:[],repairs:[],feedback:[],orders:[],events:[],ideas:[],absence:[],offers:[],contacts:[],news:[],onboard:[],emerg:[]},tab="today",sel=today(),mon=new Date(),nf="all",mine=false,draft="";mon.setDate(1);
 function toast(t,ms){const e=document.getElementById("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),ms||2500)}
@@ -719,6 +745,8 @@ function vSet(v){v.append(hero("Einstellungen","Profil, Design und Sprachassiste
  const c=h("div","card");c.append(h("div",null,"Angemeldet als "+cfg.name+(A.admin?" (Admin)":"")));const lo=h("button","alt","Abmelden");lo.onclick=logout;c.append(lo);
  c.append(h("div","hint","Design (Farbstil der App)"));{const g=h("div","thg"),BASE={auto:{n:"Automatisch",bg:"#ffffff",tx:"#777777",ac:"#111111",bd:"#e4e4e4"},light:{n:"Hell",bg:"#ffffff",tx:"#111111",ac:"#111111",bd:"#e4e4e4"},dark:{n:"Dunkel",bg:"#0c0c0c",tx:"#f2f2f2",ac:"#f2f2f2",bd:"#262626"}};
   [...Object.keys(BASE),...Object.keys(TH)].forEach(k=>{const t=TH[k]||BASE[k],b=h("button","thb"+(cfg.theme===k?" on":"")),p=h("span","thp"),a=h("span",null,"Aa"),d=h("i");p.style.background=k==="auto"?"linear-gradient(100deg,#ffffff 50%,#0c0c0c 50%)":t.bg;p.style.color=t.tx;p.style.border="1px solid "+t.bd;d.style.background=t.ac;p.append(a,d);b.append(p,h("span",null,t.n));b.setAttribute("aria-pressed",cfg.theme===k?"true":"false");b.onclick=()=>{cfg.theme=k;save();applyTheme();render()};g.append(b)});c.append(g)}
+ c.append(h("div","hint","Hintergrund"));{const g=h("div","wpg");[["none","Ohne"],["grid","Raster"],["dots","Punkte"],["glow","Lichtschein"],["rings","Ringe"],["diag","Schräg"]].forEach(([k,l])=>{const b=h("button","wpb"+((cfg.wall||"none")===k?" on":"")),p=h("span","wpv");if(k!=="none")p.dataset.wp=k;b.append(p,h("span",null,l));b.setAttribute("aria-pressed",(cfg.wall||"none")===k?"true":"false");b.onclick=()=>{cfg.wall=k;save();applyWall();render()};g.append(b)});c.append(g)}
+ {const cb=h("button","alt","Was ist neu? · Version "+APPV.replace("al",""));cb.onclick=showChangelog;c.append(cb)}
  const l=h("label","sw");l.append(h("span",null,"Assistent bestätigt Spracheingaben per Sprache"));const k=h("input");k.type="checkbox";k.style.width="auto";k.checked=cfg.speak;k.onchange=()=>{cfg.speak=k.checked;save()};l.append(k);c.style.display="grid";c.style.gap="8px";c.append(l);
  {const l2=h("label","sw");l2.append(h("span",null,"Sprache beim Sprechen"));const sl=h("select");sl.style.width="auto";[["","Automatisch"],["de","Deutsch"],["ru","Русский"],["en","English"]].forEach(([k2,n])=>{const o=h("option",null,n);o.value=k2;sl.append(o)});sl.value=cfg.vl||"";sl.onchange=()=>{cfg.vl=sl.value;save()};l2.append(sl);c.append(l2)}v.append(c);
  v.append(h("h2",null,"Datenschutz"));v.append(h("div","card hint",dsTxt));v.append(h("h2",null,"Sprachbefehle (Deutsch)"));const t=h("div","card hint");
@@ -1022,7 +1050,7 @@ function render(){popup();if(window.rlRefresh)rlRefresh();const v=document.getEl
  {const mb=h("button",["rec","rep","adm","set"].includes(tab)?"on":"");mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+NI.menu+'</svg><span class="nl">Menü</span>';mb.setAttribute("aria-label","Menü");const mn=nbadge("adm");if(mn)mb.append(h("em","nbd",String(mn)));mb.onclick=openMenu;nav.append(mb)}buildSb();
  const hh=v.querySelector(".hero h1");if(hh&&NI[tab]){const ic=document.createElementNS("http://www.w3.org/2000/svg","svg");ic.setAttribute("viewBox","0 0 24 24");ic.innerHTML=NI[tab];hh.prepend(ic)}
  if(A.from&&tab!==A.from){const bk=h("button","bk");bk.innerHTML='<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>';bk.append(document.createTextNode(NL[A.from]||"Zurück"));bk.onclick=()=>{const f=A.from;A.from=null;A.sw=true;tab=f;render();scrollTo(0,0)};v.prepend(bk)}else if(A.from===tab)A.from=null;
- try{const bn=document.getElementById("bn");document.documentElement.style.setProperty("--bnh",(bn.style.display==="none"?0:bn.offsetHeight)+"px")}catch(e){}
+ chkChangelog();try{const bn=document.getElementById("bn");document.documentElement.style.setProperty("--bnh",(bn.style.display==="none"?0:bn.offsetHeight)+"px")}catch(e){}
  if(A.sw){A.sw=false;v.classList.remove("sw");void v.offsetWidth;v.classList.add("sw")}}
 
 function readAloud(kind){if(kind==="tasks"){const L=data.tasks.filter(t=>t.date===today()&&!t.done);return say(L.length?"Heute stehen "+L.length+" Aufgaben an. "+L.map(t=>t.text).join(". "):"Heute sind keine Aufgaben offen.",true)}
