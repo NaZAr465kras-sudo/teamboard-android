@@ -50,7 +50,12 @@ async function verify(token) {
   return c.email.split("@")[0].split(".")[0];
 }
 
+const memC = new Map();
 async function isMember(id, token) {
+  const c = memC.get(id); if (c && Date.now() - c < 120_000) return true;
+  const ok = await isMember0(id, token); if (ok) memC.set(id, Date.now()); return ok;
+}
+async function isMember0(id, token) {
   const r = await fetch(`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/members/${encodeURIComponent(id)}`, {
     headers: { Authorization: "Bearer " + token },
   });
@@ -120,7 +125,7 @@ async function freeAI(env, body) {
 }
 
 // ---- Gemini (Google AI Studio, Secret GEMINI_API_KEY) ----
-const GEMINI_MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"]; // wird der Reihe nach probiert
+const GEMINI_MODELS = ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]; // wird der Reihe nach probiert
 const SYS = "Du bist Schnorki, der freundliche Assistent eines Teams im Restaurant/Cafe. Antworte kurz und auf Deutsch, ausser der Nutzer schreibt in einer anderen Sprache. Nutze die Werkzeuge, wenn sie helfen.";
 function gschema(x) {
   if (Array.isArray(x)) return x.map(gschema);
@@ -144,18 +149,20 @@ async function gemini(env, body) {
     if (!parts.length) parts.push({ text: "(leer)" });
     return { role: m.role === "assistant" ? "model" : "user", parts };
   });
-  const req = { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { maxOutputTokens: body.max_tokens } };
+  const req = { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { maxOutputTokens: body.max_tokens, thinkingConfig: { thinkingBudget: 0 } } };
   if (body.tools) req.tools = [{ functionDeclarations: body.tools.map((t) => ({ name: t.name, description: t.description || t.name, parameters: gschema(t.input_schema) })) }];
   let r, last = "";
   for (const m of GEMINI_MODELS) {
-    r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent", {
-      method: "POST", headers: { "x-goog-api-key": gkey, "content-type": "application/json" }, body: JSON.stringify(req),
-    });
+    try {
+      r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent", {
+        method: "POST", headers: { "x-goog-api-key": gkey, "content-type": "application/json" }, body: JSON.stringify(req), signal: AbortSignal.timeout(15000),
+      });
+    } catch { last = m + " timeout"; r = { ok: false, status: 504, json: async () => ({}) }; }
     if (r.ok) break;
     let msg = ""; try { msg = ((await r.json()).error || {}).message || ""; } catch {}
     last = m + " " + r.status + " " + msg.replace(/AIza[\w-]+/g, "***").slice(0, 160);
     if (![404, 429, 500, 502, 503, 504].includes(r.status)) break;
-    if (r.status !== 404) await new Promise((ok) => setTimeout(ok, 400)); // kurz warten, dann naechstes Modell
+    if (r.status !== 404) await new Promise((ok) => setTimeout(ok, 150)); // kurz warten, dann naechstes Modell
   }
   if (!r.ok) throw Object.assign(new Error("gemini: " + last), { status: r.status === 429 ? 429 : 502 });
   const d = await r.json();
