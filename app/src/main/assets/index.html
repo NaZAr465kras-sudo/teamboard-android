@@ -239,8 +239,9 @@ const applyTheme=()=>{const r=document.documentElement,t=TH[cfg.theme];THK.forEa
  if(t){THK.forEach(k=>r.style.setProperty("--"+k,t[k]));r.style.colorScheme=t.dk?"dark":"light";r.setAttribute("data-theme",t.dk?"dark":"light")}else if(cfg.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",cfg.theme==="dark"?"dark":"light");
  try{let m=document.querySelector("meta[name=theme-color]");if(!m){m=document.createElement("meta");m.name="theme-color";document.head.append(m)}m.content=(getComputedStyle(r).getPropertyValue("--bg")||"#ffffff").trim()}catch(e){}applyWall()};
 
-const APPV="al0.60.017f";
+const APPV="al0.60.018f";
 const CHANGELOG=[
+ {v:"al0.60.018f",d:"20.11.2026",t:["Bestellungen: Knopf „Küchen-Display öffnen“ (Link zur Küchen-Seite) für Admins und Küche"]},
  {v:"al0.60.017f",d:"20.11.2026",t:["Neuer Reiter „Bestellungen“ zwischen Heute und Planen (Bestellannahme, Gästewünsche, mit Zähler für offene)","Entwickler-Menü: Reiter kann unter „Bestellannahme“ für alle aus- und eingeschaltet werden"]},
  {v:"al0.60.016f",d:"20.11.2026",t:["Küche: im Web-Browser ohne unnötigen „Neu laden“-Knopf; "]},
  {v:"al0.60.015f",d:"20.11.2026",t:["Küche: Knopf „Küche öffnen“ (öffnet die Adresse direkt); im Web-Browser kein leerer Rahmen mehr, sondern ein Hinweis"]},
@@ -374,7 +375,8 @@ function oKds(v){const u=kdsUrl(PF&&PF.kdsUrl);
  if(/^http:/i.test(u)&&location.protocol==="https:"&&!window.AndroidBridge){rl.remove();ob.style.flex="1";v.append(h("div","hint","Hier im Browser blockiert die Sicherheit die Anzeige einer http-Adresse im Rahmen. „Küche öffnen“ benutzen oder die Android-App verwenden."));return}
  const fr=document.createElement("iframe");fr.src=u;fr.title="Küche";fr.setAttribute("referrerpolicy","no-referrer");fr.style.cssText="width:100%;height:70vh;min-height:420px;border:1px solid var(--bd);border-radius:14px;background:#fff";rl.onclick=()=>{fr.src=u};v.append(fr);
  v.append(h("div","hint","Erscheint hier nichts (Anzeige im Rahmen gesperrt, anderes WLAN oder Browser-Version), „Im Browser öffnen“ benutzen. Der Küchen-Bildschirm funktioniert nur im selben WLAN."))}
-const DV={kds:oKds,cal:v=>vCal(v),notes:v=>vNotes(v),rec:v=>vRec(v),rep:v=>vRep(v),lists:oLists,plan:oPlan,stock:oStock,temp:oTemp,onb:oOnb,emerg:oEmerg};
+function oOrd(v){const u=kdsUrl(PF&&PF.kdsUrl);if(kdsOk()&&u){const r=h("div","row"),a=h("button","fix","Küchen-Display öffnen ↗"),b=h("button","alt","In der App");a.onclick=()=>openOut(u,u);b.onclick=()=>{A.osub="kds";goTab("ops")};r.append(a,b);v.append(r)}oMod(v,"orders")}
+const DV={orders:oOrd,kds:oKds,cal:v=>vCal(v),notes:v=>vNotes(v),rec:v=>vRec(v),rep:v=>vRep(v),lists:oLists,plan:oPlan,stock:oStock,temp:oTemp,onb:oOnb,emerg:oEmerg};
 function setSub(d){A.osub=d;A.mdl=null;A.sw=true;render();scrollTo(0,0)}
 function vSec(v,sec){const S=SECS[sec],ds=secDests(sec);let sub=ds.includes(A.osub)?A.osub:(S.def&&ds.includes(S.def)?S.def:"");
  if(!sub){v.append(hero(S.l,S.d));S.g.forEach(([t,ks])=>{const it=ks.filter(k=>ds.includes(k));if(!it.length)return;if(t)v.append(h("h2",null,t));const g=h("div","tiles");it.forEach(k=>g.append(tileEl({k,l:DL[k][0],d:DL[k][1],go:()=>setSub(k)})));v.append(g)});return}
