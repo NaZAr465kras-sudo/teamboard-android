@@ -21,6 +21,7 @@ service cloud.firestore {
     match /config/biz {
       allow read, write: if isAdmin() || (isDev() && !exists(/databases/$(database)/documents/config/biz));
     }
+    match /config/prefs { allow read: if isMember(); allow write: if isAdmin(); }
     match /config/flags { allow read: if isMember(); allow write: if isDev(); }
     match /config/dev { allow read: if isMember(); allow write: if isDev(); }
 
