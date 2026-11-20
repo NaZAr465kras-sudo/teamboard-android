@@ -239,8 +239,9 @@ const applyTheme=()=>{const r=document.documentElement,t=TH[cfg.theme];THK.forEa
  if(t){THK.forEach(k=>r.style.setProperty("--"+k,t[k]));r.style.colorScheme=t.dk?"dark":"light";r.setAttribute("data-theme",t.dk?"dark":"light")}else if(cfg.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",cfg.theme==="dark"?"dark":"light");
  try{let m=document.querySelector("meta[name=theme-color]");if(!m){m=document.createElement("meta");m.name="theme-color";document.head.append(m)}m.content=(getComputedStyle(r).getPropertyValue("--bg")||"#ffffff").trim()}catch(e){}applyWall()};
 
-const APPV="al0.60.020f";
+const APPV="al0.60.021f";
 const CHANGELOG=[
+ {v:"al0.60.021f",d:"20.11.2026",t:["Küchen-Display läuft in der App in einem eigenen Fenster mit dauerhaftem Speicher – der Verbindungscode muss nur einmal eingegeben werden und bleibt nach Neustart erhalten","Das Menü bleibt sichtbar; Dialoge und Menü legen sich über das Display"]},
  {v:"al0.60.020f",d:"20.11.2026",t:["Küchen-Display: Android-App erlaubt Cookies von Drittseiten, damit die Kopplung (Verbindungscode) dauerhaft gespeichert bleibt","Fix: Versionsnummer im oberen Hinweis und die Versionen im Änderungsprotokoll stimmen wieder"]},
  {v:"al0.60.019f",d:"20.11.2026",t:["Bestellungen: das Küchen-Display öffnet sich direkt im Reiter im Vollbild, das Menü (Seitenleiste am Tablet / untere Leiste am Handy) bleibt sichtbar – nur in der App; „Bestellliste“ zeigt die Bestellannahme","Küchen-Adresse wird nur noch von Admins unter Betrieb → Küche eingestellt; kein Öffnen im externen Browser mehr"]},
  {v:"al0.60.018f",d:"20.11.2026",t:["Bestellungen: Knopf „Küchen-Display öffnen“ (Link zur Küchen-Seite) für Admins und Küche"]},
@@ -374,11 +375,18 @@ let KF=false;
 function oKds(v){const u=kdsUrl(PF&&PF.kdsUrl);
  if(A.admin){const c=h("div","card");c.style.cssText="display:grid;gap:8px";c.append(h("div","hint","Adresse des Küchen-Displays (nur Admins und Mitarbeiter mit Position „Küche“ sehen diese Seite)"));const i=h("input");i.placeholder="z. B. http://192.168.178.54/#/main";i.value=(PF&&PF.kdsUrl)||"";i.autocapitalize="off";i.autocomplete="off";i.inputMode="url";const sv=h("button","fix","Speichern");sv.onclick=()=>{const n=kdsUrl(i.value);if(i.value.trim()&&!n)return toast("Adresse ungültig");setPF({kdsUrl:n});toast("Gespeichert")};const r=h("div","row");r.append(i,sv);c.append(r);v.append(c)}
  v.append(h("div","hint",u?"Das Küchen-Display erscheint im Reiter „Bestellungen“ (nur für Admins und Mitarbeiter mit Position „Küche“) und öffnet sich dort nur in der App.":"Noch keine Adresse eingetragen."))}
-function oOrd(v){const u=kdsUrl(PF&&PF.kdsUrl),can=!(/^http:/i.test(u)&&location.protocol==="https:"&&!window.AndroidBridge);
+const KB=()=>window.AndroidBridge&&AndroidBridge.kdsShow?AndroidBridge:null;let KS=false,KU="";
+function kdsSync(){const b=KB();if(!b)return;const el=document.getElementById("kdsph");
+ if(!el||!el.isConnected||document.querySelector("#mn.on,#sh.on,#pop.on,.mdl")){if(KS){KS=false;try{b.kdsHide()}catch(e){}}return}
+ const r=el.getBoundingClientRect(),z=parseFloat(document.documentElement.style.zoom)||1;if(r.width<10||r.height<10)return;try{b.kdsShow(KU,r.left*z,r.top*z,r.width*z,r.height*z);KS=true}catch(e){}}
+setInterval(()=>{if(KS||document.getElementById("kdsph"))kdsSync()},400);
+function oOrd(v){const u=kdsUrl(PF&&PF.kdsUrl),nat=!!KB(),can=nat||/^https:/i.test(u);
  if(kdsOk()&&u&&can&&!A.olist){KF=true;v.classList.add("kfull");
   const bar=h("div","row"),lb=h("button","alt","Bestellliste"),rl=h("button","alt","Neu laden");lb.onclick=()=>{A.olist=true;render()};bar.append(lb,rl);bar.style.margin="0 0 8px";v.append(bar);
-  const fr=document.createElement("iframe");fr.src=u;fr.title="Küche";fr.setAttribute("referrerpolicy","no-referrer");fr.style.cssText="display:block;width:100%;height:60vh;border:1px solid var(--bd);border-radius:14px;background:#fff";rl.onclick=()=>{fr.src=u};v.append(fr);
-  const fit=()=>{if(!fr.isConnected)return removeEventListener("resize",fit);const z=parseFloat(document.documentElement.style.zoom)||1,nv=document.getElementById("nav"),nh=nv&&getComputedStyle(nv).display!=="none"?nv.offsetHeight:0;fr.style.height=Math.max(300,Math.round((innerHeight-fr.getBoundingClientRect().top*z-nh)/z-10))+"px"};
+  let fr;if(nat){fr=h("div");fr.id="kdsph";KU=u;fr.style.cssText="width:100%;height:60vh;border-radius:14px;background:var(--bd)";rl.onclick=()=>{try{AndroidBridge.kdsReload()}catch(e){}}}
+  else{fr=document.createElement("iframe");fr.src=u;fr.title="Küche";fr.setAttribute("referrerpolicy","no-referrer");fr.style.cssText="display:block;width:100%;height:60vh;border:1px solid var(--bd);border-radius:14px;background:#fff";rl.onclick=()=>{fr.src=u}}
+  v.append(fr);
+  const fit=()=>{if(!fr.isConnected)return removeEventListener("resize",fit);const z=parseFloat(document.documentElement.style.zoom)||1,nv=document.getElementById("nav"),nh=nv&&getComputedStyle(nv).display!=="none"?nv.offsetHeight:0;fr.style.height=Math.max(300,Math.round((innerHeight-fr.getBoundingClientRect().top*z-nh)/z-10))+"px";kdsSync()};
   addEventListener("resize",fit);requestAnimationFrame(fit);setTimeout(fit,350);return}
  if(kdsOk()&&u){if(!can)v.append(h("div","hint","Das Küchen-Display wird nur in der Android-App angezeigt."));else{const b=h("button","fix","Küchen-Display anzeigen");b.style.marginBottom="10px";b.onclick=()=>{A.olist=false;render()};v.append(b)}}
  oMod(v,"orders")}
@@ -1253,7 +1261,7 @@ function render(){popup();applyPrefs();{const bv=document.getElementById("bnv");
  const hh=v.querySelector(".hero h1");if(hh&&NI[tic(tab)]){const ic=document.createElementNS("http://www.w3.org/2000/svg","svg");ic.setAttribute("viewBox","0 0 24 24");ic.innerHTML=NI[tic(tab)];hh.prepend(ic)}
  if(A.from&&tab!==A.from){const bk=h("button","bk");bk.innerHTML='<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>';bk.append(document.createTextNode(NL[A.from]||"Zurück"));bk.onclick=()=>{const f=A.from;A.from=null;A.sw=true;tab=f;render();scrollTo(0,0)};v.prepend(bk)}else if(A.from===tab)A.from=null;
  chkChangelog();try{const bn=document.getElementById("bn");document.documentElement.style.setProperty("--bnh",(bn.style.display==="none"?0:bn.offsetHeight)+"px")}catch(e){}
- if(A.sw){A.sw=false;v.classList.remove("sw");void v.offsetWidth;v.classList.add("sw")}}
+ if(A.sw){A.sw=false;v.classList.remove("sw");void v.offsetWidth;v.classList.add("sw")}requestAnimationFrame(kdsSync)}
 
 function readAloud(kind){if(kind==="tasks"){const L=data.tasks.filter(t=>t.date===today()&&!t.done);return say(L.length?"Heute stehen "+L.length+" Aufgaben an. "+L.map(t=>t.text).join(". "):"Heute sind keine Aufgaben offen.",true)}
  const L=data.notes.filter(n=>!n.done);say(L.length?L.length+" offene Notizen. "+L.map(n=>(n.cat==="hot"?"Dringend. ":"")+n.text+(n.who?". Von "+n.who:"")).join(". "):"Es gibt keine offenen Notizen.",true)}

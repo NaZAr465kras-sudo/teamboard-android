@@ -16,6 +16,7 @@ import android.provider.Settings
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.ValueCallback
@@ -42,6 +43,10 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
 
     private lateinit var web: WebView
+    private lateinit var root: FrameLayout
+    private var kds: WebView? = null
+    private var kdsUrl = ""
+    private var kdsBox = ""
     private var recognizer: SpeechRecognizer? = null
     private var wantListen = false
 
@@ -78,7 +83,52 @@ class MainActivity : AppCompatActivity() {
         fun stopListening() = runOnUiThread { recognizer?.stopListening() }
 
         @JavascriptInterface
+        fun kdsShow(url: String, x: Double, y: Double, w: Double, h: Double) = runOnUiThread { showKds(url, x, y, w, h) }
+
+        @JavascriptInterface
+        fun kdsReload() = runOnUiThread { kds?.reload() }
+
+        @JavascriptInterface
+        fun kdsHide() = runOnUiThread { kds?.visibility = View.GONE }
+
+        @JavascriptInterface
         fun saveFile(name: String, data: String) = runOnUiThread { writeFile(name, data) }
+    }
+
+    // Küchen-Display: eigene WebView über dem Inhaltsbereich (eigener, dauerhafter Speicher → Kopplung bleibt erhalten)
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun showKds(url: String, x: Double, y: Double, w: Double, h: Double) {
+        if (!(url.startsWith("http://") || url.startsWith("https://"))) return
+        val d = resources.displayMetrics.density
+        var v = kds
+        if (v == null) {
+            v = WebView(this).apply {
+                setBackgroundColor(Color.WHITE)
+                with(settings) {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    databaseEnabled = true
+                    mediaPlaybackRequiresUserGesture = false
+                    allowFileAccess = false
+                    allowContentAccess = false
+                    mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                }
+                webViewClient = WebViewClient()
+                CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
+            }
+            root.addView(v, FrameLayout.LayoutParams(1, 1))
+            kds = v
+        }
+        val key = "$x,$y,$w,$h"
+        if (key != kdsBox) {
+            val lp = FrameLayout.LayoutParams(maxOf(1, (w * d).toInt()), maxOf(1, (h * d).toInt()))
+            lp.leftMargin = (x * d).toInt()
+            lp.topMargin = (y * d).toInt()
+            v.layoutParams = lp
+            kdsBox = key
+        }
+        if (url != kdsUrl) { kdsUrl = url; v.loadUrl(url) }
+        v.visibility = View.VISIBLE
     }
 
     private fun beginListen() {
@@ -151,7 +201,9 @@ class MainActivity : AppCompatActivity() {
             layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             setBackgroundColor(Color.parseColor("#111111"))
         }
-        setContentView(web)
+        root = FrameLayout(this)
+        root.addView(web)
+        setContentView(root)
 
         with(web.settings) {
             javaScriptEnabled = true
@@ -216,7 +268,9 @@ class MainActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (web.canGoBack()) web.goBack() else { isEnabled = false; onBackPressedDispatcher.onBackPressed() }
+                val k = kds
+                if (k != null && k.visibility == View.VISIBLE && k.canGoBack()) k.goBack()
+                else if (web.canGoBack()) web.goBack() else { isEnabled = false; onBackPressedDispatcher.onBackPressed() }
             }
         })
 
@@ -298,7 +352,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(out: Bundle) { super.onSaveInstanceState(out); web.saveState(out) }
     override fun onPause() { super.onPause(); CookieManager.getInstance().flush() }
-    override fun onDestroy() { recognizer?.destroy(); web.destroy(); super.onDestroy() }
+    override fun onStop() { super.onStop(); CookieManager.getInstance().flush() }
+    override fun onDestroy() { recognizer?.destroy(); kds?.destroy(); web.destroy(); super.onDestroy() }
 
     companion object { const val HOST = "appassets.androidplatform.net" }
 }
