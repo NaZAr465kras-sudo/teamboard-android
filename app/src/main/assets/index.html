@@ -239,8 +239,9 @@ const applyTheme=()=>{const r=document.documentElement,t=TH[cfg.theme];THK.forEa
  if(t){THK.forEach(k=>r.style.setProperty("--"+k,t[k]));r.style.colorScheme=t.dk?"dark":"light";r.setAttribute("data-theme",t.dk?"dark":"light")}else if(cfg.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",cfg.theme==="dark"?"dark":"light");
  try{let m=document.querySelector("meta[name=theme-color]");if(!m){m=document.createElement("meta");m.name="theme-color";document.head.append(m)}m.content=(getComputedStyle(r).getPropertyValue("--bg")||"#ffffff").trim()}catch(e){}applyWall()};
 
-const APPV="al0.58.011f";
+const APPV="al0.59.012f";
 const CHANGELOG=[
+ {v:"al0.59.012f",d:"20.11.2026",t:["Team-Notizen: neuer Block „Aufgaben heute“ (inkl. überfälliger) mit Schnellerfassung direkt über den Notizen"]},
  {v:"al0.58.011f",d:"20.11.2026",t:["Schlauere Spracheingabe: „Notiere …“ / „Schreib auf …“ – die App hört erst zu und fragt dann, wohin gespeichert wird (Notiz, Aufgabe, Dringend, Einkauf, Übergabe, Reparatur, Bestellung, Feedback, Pinnwand)","Die App schlägt den passenden Ort vor (z. B. „Milch kaufen“ → Einkauf); antworten mit „ja“, einem Stichwort oder per Tipp","Direktbefehl: „Notiere Gläser polieren als Aufgabe für morgen“","Neuer Knopf „Diktieren“ auf Heute; abschaltbar unter Einstellungen → Persönlich"]},
  {v:"al0.58.011f",d:"20.11.2026",t:["Lebendiger Hintergrund je Jahreszeit: Schnee (Winter), Blütenblätter (Frühling), Glühwürmchen (Sommer), Herbstlaub (Herbst)","Einstellungen → Allgemein / Persönlich: Effekt automatisch, aus oder frei wählbar","„Weniger Animationen“ und die Systemeinstellung „Bewegung reduzieren“ schalten den Effekt ab"]},
  {v:"al0.58.011f",d:"20.11.2026",t:["Sicherheit: Dienstplan, Frei-Wünsche und Verfügbarkeit sind jetzt serverseitig geschützt – Mitarbeiter können nur eigene Einträge ändern","Fix: Dienstplan und Verfügbarkeit laden jetzt auch bei vielen Einträgen vollständig (vorher nur die letzten 300)","Warnung beim Einteilen, wenn die Person „kann nicht“, erst später kann oder frei hat","Android: Backup deaktiviert; Stress- und Sicherheitstest bestanden"]},
@@ -866,6 +867,9 @@ function calAgenda(v){const td=today(),me=cfg.sess.id;let any=0;const ov=data.ta
  if(!any)v.append(h("div","empty","In den nächsten 30 Tagen ist nichts geplant"))}
 
 function vNotes(v){v.append(hero("Team-Notizen","Was die anderen für euch hinterlassen haben"));
+ {const td=today(),T=data.tasks.filter(t=>t.date<=td&&(t.date===td||!t.done)).sort((x,y)=>(x.done?1:0)-(y.done?1:0)||x.date.localeCompare(y.date));
+  v.append(h("h2",null,"Aufgaben heute"));v.append(addBox("Aufgabe für heute …",x=>addTask(x,td)));
+  if(!T.length)v.append(h("div","hint","Heute ist nichts offen"));T.slice(0,12).forEach(t=>v.append(taskRow(t)));if(T.length>12)v.append(h("div","hint","+ "+(T.length-12)+" weitere im Kalender"))}
  const ta=h("textarea");ta.placeholder="Notiz für das ganze Team…";ta.value=draft;ta.oninput=()=>draft=ta.value;
  const sc=h("select");for(const k in CATS){const o=h("option",null,CATS[k]);o.value=k;sc.append(o)}sc.value="info";
  const b=h("button","fix","Senden");b.onclick=async()=>{if(await addNote(ta.value,sc.value)){draft="";render()}};
