@@ -11,8 +11,8 @@ android {
         applicationId = "de.teamboard.app"
         minSdk = 24
         targetSdk = 34
-        versionCode = 67
-        versionName = "0.60.018f"
+        versionCode = 68
+        versionName = "0.60.019f"
     }
     signingConfigs {
         create("fixed") {
