@@ -75,7 +75,7 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     match /{coll}/{docId} {
-      allow read, write: if isMember() && coll in ['notes','tasks','reports','recipes','rgroups','rules','checklists','checks','plan','offs','stock','tdev','temps','devmsgs','handover','repairs','feedback','orders','events','ideas','absence'];
+      allow read, write: if isMember() && coll in ['notes','tasks','reports','recipes','rgroups','rules','checklists','checks','plan','avail','offs','stock','tdev','temps','devmsgs','handover','repairs','feedback','orders','events','ideas','absence'];
     }
     match /{coll}/{docId} {
       allow read: if isMember() && coll in ['offers','contacts','news','onboard','emerg'];
