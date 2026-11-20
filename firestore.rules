@@ -43,12 +43,36 @@ service cloud.firestore {
         (exists(/databases/$(database)/documents/reg/$(id)) && (request.resource.data.role == 'staff' || id in admins()))
         || (id == 'admin-adminski' && !exists(/databases/$(database)/documents/config/main)));
       allow update: if isAdmin() || (signedIn() && id == myId() && (
-        request.resource.data.role == resource.data.role
+        (request.resource.data.role == resource.data.role
         || request.resource.data.role == 'staff'
-        || id in admins()));
+        || id in admins())
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['pos','noAvail','noSwap','noOff'])));
       allow delete: if isAdmin() || (signedIn() && id == myId());
     }
 
+    function onlyKeys(ks) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(ks); }
+    // Dienstplan: nur Admins schreiben; Mitarbeiter dürfen nur Tausch anfragen / angebotene Schicht übernehmen
+    match /plan/{pid} {
+      allow read: if isMember();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (isMember() && resource.data.uid == myId() && onlyKeys(['swapBy','swapById']))
+        || (isMember() && resource.data.swapBy is string && resource.data.swapBy != '' && request.resource.data.uid == myId() && onlyKeys(['uid','name','swapBy','swapById','note']));
+    }
+    // Frei-Wünsche: Mitarbeiter stellen nur eigene, nur "pending"; Entscheidung nur Admin
+    match /offs/{oid} {
+      allow read: if isMember();
+      allow create: if isMember() && request.resource.data.uid == myId() && request.resource.data.status == 'pending';
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (isMember() && resource.data.uid == myId());
+    }
+    // Verfügbarkeit: jeder nur eigene Einträge
+    match /avail/{vid} {
+      allow read: if isMember();
+      allow create: if isMember() && (request.resource.data.uid == myId() || isAdmin());
+      allow update: if isAdmin() || (isMember() && resource.data.uid == myId() && request.resource.data.uid == myId());
+      allow delete: if isAdmin() || (isMember() && resource.data.uid == myId());
+    }
     match /shifts/{sid} {
       allow read: if isAdmin() || (isMember() && resource.data.uid == myId());
       allow create: if isMember() && request.resource.data.uid == myId();
@@ -64,7 +88,7 @@ service cloud.firestore {
       allow get: if isMember() || (signedIn() && resource.data.uid == myId());
       allow list: if isMember();
       allow create: if isMember() || (signedIn() && request.resource.data.uid == myId() && request.resource.data.type == 'restore');
-      allow update, delete: if isMember() || (signedIn() && resource.data.uid == myId());
+      allow update, delete: if isAdmin() || (signedIn() && resource.data.uid == myId());
     }
     // Schnorki-Verlauf: jeder schreibt nur seinen eigenen, lesen darf nur der Entwickler
     match /aihist/{uid} {
@@ -76,7 +100,7 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     match /{coll}/{docId} {
-      allow read, write: if isMember() && coll in ['notes','tasks','reports','recipes','rgroups','rules','checklists','checks','plan','avail','offs','stock','tdev','temps','devmsgs','handover','repairs','feedback','orders','events','ideas','absence'];
+      allow read, write: if isMember() && coll in ['notes','tasks','reports','recipes','rgroups','rules','checklists','checks','stock','tdev','temps','devmsgs','handover','repairs','feedback','orders','events','ideas','absence'];
     }
     match /{coll}/{docId} {
       allow read: if isMember() && coll in ['offers','contacts','news','onboard','emerg'];
