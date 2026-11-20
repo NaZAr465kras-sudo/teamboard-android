@@ -163,6 +163,7 @@ class MainActivity : AppCompatActivity() {
             mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
         CookieManager.getInstance().setAcceptCookie(true)
+        CookieManager.getInstance().setAcceptThirdPartyCookies(web, true)
         web.addJavascriptInterface(Bridge(), "AndroidBridge")
 
         // Die Oberfläche liegt als Datei in der App und wird über eine echte https-Adresse ausgeliefert.
