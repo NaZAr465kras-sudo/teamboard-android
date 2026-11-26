@@ -130,6 +130,11 @@ body.lg input:not([type=checkbox]):not([type=radio]),body.lg textarea,body.lg se
 .grid{gap:4px}.day{aspect-ratio:auto;width:100%;max-width:46px;height:46px;margin:0 auto;border-radius:12px}.day .dd{position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:center;gap:3px;font-style:normal}
 .day .dd i{position:static;margin:0;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.65;display:block}.day .dd i.e{border-radius:1px;transform:rotate(45deg)}.day .dd i.s{width:10px;height:3px;border-radius:2px;margin-top:1px}
 .calm{max-width:440px;margin:0 auto}.cal-l{margin-top:8px;text-align:center}.sub2{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin:18px 0 6px}
+.tgw{overflow-x:auto;border:1px solid var(--bd);border-radius:14px}.tg{display:grid;min-width:100%}.tgh{background:transparent;border:0;border-bottom:1px solid var(--bd);padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:0;color:var(--tx);cursor:pointer;font:inherit}.tgh small{font-size:11px}.tgh b{font-size:15px;min-width:28px;height:28px;line-height:28px;border-radius:50%;text-align:center}.tgh.td b{background:var(--ac);color:var(--on)}
+.tga{padding:3px;display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--bd);min-height:6px}.tgp{border:0;border-left:3px solid var(--bd);border-radius:5px;padding:1px 5px;font:inherit;font-size:11px;text-align:left;background:var(--bd);color:var(--tx)}.tgp.done{text-decoration:line-through}
+.tgg{position:relative}.tgg span{position:absolute;right:4px;font-size:10px;color:var(--tx);transform:translateY(-50%)}.tgc{position:relative;border-left:1px solid var(--bd);background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 43px,var(--bd) 43px,var(--bd) 44px)}
+.tgi{position:absolute;box-sizing:border-box;overflow:hidden;text-align:left;border:0;border-left:3px solid;border-radius:6px;background:var(--bd);color:var(--tx);font:inherit;font-size:11px;line-height:1.2;padding:2px 4px;overflow-wrap:break-word}.tgi small{display:block;font-size:10px;color:var(--tx)}.tgi b{font-weight:600}.tgn{position:absolute;left:0;right:0;height:2px;background:#e11d48;z-index:2;pointer-events:none}
+.qa{display:grid;gap:4px;margin:8px 0 6px}.day.hl{text-decoration:underline dotted}
 .evh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.pr{display:flex;align-items:center;gap:10px;margin-top:8px}.pr.done span{text-decoration:line-through;opacity:.65}.ev .t{width:100%}
 @media (min-width:700px){main{max-width:780px}.st{grid-template-columns:repeat(4,1fr)}.calw{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:28px;align-items:start}.calm{margin:0}.mdl{align-items:center}.mdl>div{border-radius:16px}}
 @media (min-width:900px){
@@ -138,7 +143,7 @@ body.lg input:not([type=checkbox]):not([type=radio]),body.lg textarea,body.lg se
  .sb-b{font-weight:700;font-size:18px;letter-spacing:-.02em;padding:6px 12px 16px}
  .sb-i,.sb-s{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:transparent;border:0;border-radius:10px;color:var(--mut);padding:10px 12px;font-size:14px;font-weight:500}
  .sb-i svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}.sb-i span,.sb-s{flex:1}.sb-s{padding:7px 12px 7px 44px;font-size:13px;display:flex}
- .sb-i:hover,.sb-s:hover{background:var(--bd);color:var(--tx)}.sb-i.on{background:var(--bd);color:var(--tx);font-weight:600}.sb-s.on{color:var(--tx);font-weight:600}
+ .sb-s{flex:none}.sb-i:hover,.sb-s:hover{background:var(--bd);color:var(--tx)}.sb-i.on{background:var(--bd);color:var(--tx);font-weight:600}.sb-s.on{color:var(--tx);font-weight:600}
  main{max-width:1040px;padding-bottom:100px}body.in #mic,body.in #ai{bottom:24px}body.in #toast{bottom:90px;left:calc(50% + 118px)}
  #v[data-tab=today]{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;align-items:start}#v[data-tab=today]>*{grid-column:1/-1}#v[data-tab=today]>.wg{grid-column:auto}
  .tiles{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
@@ -239,8 +244,9 @@ const applyTheme=()=>{const r=document.documentElement,t=TH[cfg.theme];THK.forEa
  if(t){THK.forEach(k=>r.style.setProperty("--"+k,t[k]));r.style.colorScheme=t.dk?"dark":"light";r.setAttribute("data-theme",t.dk?"dark":"light")}else if(cfg.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",cfg.theme==="dark"?"dark":"light");
  try{let m=document.querySelector("meta[name=theme-color]");if(!m){m=document.createElement("meta");m.name="theme-color";document.head.append(m)}m.content=(getComputedStyle(r).getPropertyValue("--bg")||"#ffffff").trim()}catch(e){}applyWall()};
 
-const APPV="al0.60.021f";
+const APPV="al0.61.022f";
 const CHANGELOG=[
+ {v:"al0.61.022f",d:"26.11.2026",t:["Kalender komplett neu: Ansichten Tag · Woche · Monat · Agenda mit Zeitraster (Wochenende, aktuelle Uhrzeit, Überschneidungen nebeneinander), Wischen für vor/zurück, KW und deutsche Feiertage","Termine: Beginn/Ende, ganztägig, Art mit Farbe (Event, Catering, Reservierung, Lieferung, Wartung, Team), Serien (täglich, werktags, wöchentlich, monatlich, jährlich) mit „nur diesen Termin löschen“, Erinnerung, Duplizieren, Bearbeiten","Schnelleingabe per Satz: „Catering Fr 14–18 Uhr“, „Aufgabe morgen Milch bestellen“, „jeden Montag 8 Uhr Lieferung“ – mit Vorschau","Ebenen ein/aus (Events, Aufgaben, Meine Schicht, Team-Schichten und Freiwünsche), Suche, Tippen auf freie Stelle = neuer Termin, Export als .ics (Google/Apple/Outlook)"]},
  {v:"al0.60.021f",d:"20.11.2026",t:["Küchen-Display läuft in der App in einem eigenen Fenster mit dauerhaftem Speicher – der Verbindungscode muss nur einmal eingegeben werden und bleibt nach Neustart erhalten","Das Menü bleibt sichtbar; Dialoge und Menü legen sich über das Display"]},
  {v:"al0.60.020f",d:"20.11.2026",t:["Küchen-Display: Android-App erlaubt Cookies von Drittseiten, damit die Kopplung (Verbindungscode) dauerhaft gespeichert bleibt","Fix: Versionsnummer im oberen Hinweis und die Versionen im Änderungsprotokoll stimmen wieder"]},
  {v:"al0.60.019f",d:"20.11.2026",t:["Bestellungen: das Küchen-Display öffnet sich direkt im Reiter im Vollbild, das Menü (Seitenleiste am Tablet / untere Leiste am Handy) bleibt sichtbar – nur in der App; „Bestellliste“ zeigt die Bestellannahme","Küchen-Adresse wird nur noch von Admins unter Betrieb → Küche eingestellt; kein Öffnen im externen Browser mehr"]},
@@ -325,7 +331,7 @@ const WR={
  handover(b){if(off("handover"))return 0;const L=data.handover.slice().sort((a,c)=>c.ts-a.ts).slice(0,2);if(!L.length){b.append(h("div","empty","Keine Übergabe-Notiz"));return}L.forEach(r=>{const c=h("div","card");c.append(h("div",null,r.text),h("div","hint",r.who+" · "+tm(r.ts)));b.append(c)})},
  orders(b){if(off("orders"))return 0;const L=data.orders.filter(r=>r.state!=="done").sort((a,c)=>c.ts-a.ts).slice(0,5);if(!L.length){b.append(h("div","empty","Keine offenen Bestellungen"));return}L.forEach(r=>{const c=h("div","card item"),x=h("div","t");x.append(h("div",null,r.text),h("div","hint",(r.who||"")+" · "+tm(r.ts)));const d=h("button","alt","Erledigt");d.onclick=()=>patch("orders",r.id,{state:"done",by:cfg.name});c.append(x,d);b.append(c)})},
  repair(b){if(off("repair"))return 0;const L=data.repairs.filter(r=>r.state!=="done").sort((a,c)=>c.ts-a.ts).slice(0,3);if(!L.length){b.append(h("div","empty","Nichts defekt gemeldet"));return}L.forEach(r=>{const c=h("div","card");c.append(h("div",null,(r.urgent?"⚠ ":"")+r.text),h("div","hint",r.who+" · "+tm(r.ts)));b.append(c)})},
- events(b){if(off("events"))return 0;const L=data.events.filter(e=>(e.date||"")>=today()).sort((a,c)=>a.date.localeCompare(c.date)).slice(0,3);if(!L.length){b.append(h("div","empty","Keine Events geplant"));return}L.forEach(r=>{const c=h("div","card");c.append(h("div",null,r.text),h("div","hint",dayL(r.date)));b.append(c)})},
+ events(b){if(off("events"))return 0;const L=[];for(let i=0;i<30&&L.length<3;i++){const s=addDays(i);evOn(s).forEach(e=>L.push({e,s}))}if(!L.length){b.append(h("div","empty","Keine Events geplant"));return}L.slice(0,3).forEach(({e,s})=>{const c=h("div","card");c.style.borderLeft="4px solid "+evCol(e);c.append(h("div",null,(evT(e)?evT(e)+" · ":"")+e.text),h("div","hint",dayL(s)));b.append(c)})},
  tasks(b){const td=today(),T=data.tasks,mine_=T.filter(t=>t.date===td),over=T.filter(t=>t.date<td&&!t.done);
   b.append(addBox("Neue Aufgabe für heute…",x=>addTask(x,td)));
   if(over.length){b.append(h("div","sub","Überfällig"));over.forEach(t=>b.append(taskRow(t)))}
@@ -625,7 +631,7 @@ function briefItems(){const b=BF(),me=cfg.sess.id,td=today(),t2=ymd(new Date(Dat
  data.reports.filter(r=>r.type==="problem"&&r.sev==="r"&&!r.done&&r.ts>b.t).forEach(x=>add("🔴 Notfall",x,x.text));
  if(!off("repair"))data.repairs.filter(r=>r.urgent&&r.state!=="done"&&r.ts>b.t).forEach(x=>add("Reparatur",x,x.text));
  if(!off("absence"))data.absence.filter(r=>r.state!=="done"&&r.ts>b.t).forEach(x=>add("Ausfall",x,x.text));
- if(!off("events"))data.events.filter(e=>e.date>=td&&e.date<=t2).forEach(x=>add("Event "+dayL(x.date),x,x.text+(x.sec?" – Vorbereitung: "+x.sec:"")));
+ if(!off("events"))for(let s_=td;s_<=t2;s_=addD(s_,1))evOn(s_).forEach(x=>add("Event "+dayL(s_),x,x.text+(x.sec?" – Vorbereitung: "+x.sec:"")));
  return I.sort((a,c)=>c.ts-a.ts)}
 Object.assign(WR,{briefing(b){if(off("brief"))return 0;const I=briefItems();if(!I.length){b.append(h("div","empty","Alles gelesen ✓ – nichts Neues seit deiner letzten Schicht"));return}
  I.slice(0,10).forEach(it=>{const r=h("div","card item"),k=h("button","chk"),x=h("div","t");k.setAttribute("aria-label","Gelesen");x.append(h("div",null,it.txt),h("div","hint",it.src+(it.who?" · "+it.who:"")+" · "+tm(it.ts)));k.onclick=()=>{const bb=BF(),n=Date.now();bb.r[it.id]=n;for(const q in bb.r)if(n-bb.r[q]>12*864e5)delete bb.r[q];save();render()};r.append(k,x);b.append(r)});
@@ -851,7 +857,7 @@ function goTop(k){A.from=null;A.sw=true;A.mdl=null;tab=k;render();scrollTo(0,0)}
 const OPG=[["Team",["plan","onb","news","handover","absence","ideas"]],["Café",["lists","stock","temp","repair","orders","offers"]],["Gäste & Sicherheit",["feedback","emerg"]]];
 function nbadge(k){try{if(SECS[k])return secDests(k).reduce((a,x)=>a+nbadge(x),0);k=String(k).replace("ops:","");const me=cfg.sess.id,td=today(),o=x=>data[x].filter(r=>r.state!=="done").length,bi=src=>briefItems().filter(x=>x.src===src).length;switch(k){case"orders":return o("orders");case"news":return bi("News");case"handover":return bi("Übergabe");case"today":return briefItems().length;case"notes":return data.notes.filter(n=>n.cat==="hot"&&!n.done).length;case"adm":return A.admin?data.reports.filter(r=>!r.done).length:0;
  case"stock":return data.stock.filter(s=>s.state==="need").length;case"repair":return o("repairs");case"orders":return o("orders");case"feedback":return o("feedback");case"absence":return o("absence");case"plan":return data.plan.filter(p=>p.swapBy&&p.uid!==me&&p.date>=td).length;
- case"cal":return data.tasks.filter(t=>t.date===td&&!t.done).length+(off("events")?0:data.events.filter(e=>e.date===td).length);}}catch(e){}return 0}
+ case"cal":return data.tasks.filter(t=>t.date===td&&!t.done).length+(off("events")?0:evOn(td).length);}}catch(e){}return 0}
 function tileEl(it,after){const b=h("button","tile"),ic=it.k.replace("ops:","");b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+(NI[ic]||NI.ops)+'</svg>';b.append(h("span",null,it.l));if(it.d)b.append(h("small",null,it.d));const n=nbadge(it.k);if(n){const e=h("em","nbd",String(n));e.setAttribute("aria-label",n+" offen");b.append(e)}b.onclick=()=>{it.go();if(after)after()};return b}
 function navGroups(){const G=[{t:"Täglich",it:[{k:"today",l:"Heute",go:()=>goTop("today")}]}];
  Object.keys(SECS).forEach(k=>{const it=secDests(k).map(d=>({k:d,l:DL[d][0],go:()=>{A.osub=d;goTop(k)}}));if(it.length)G.push({t:SECS[k].l,it})});
@@ -870,33 +876,155 @@ const tic=k=>({planen:"cal",team:"team",help:"emerg"})[k]||k;
 function secGo(k){const S=SECS[k];if(!(S&&secDests(k).includes(A.osub)))A.osub="";if(tab!==k)A.sw=true;A.from=null;A.mdl=null;tab=k;render();scrollTo(0,0)}
 /* ---- Kalender + Events ---- */
 const evPrep=e=>String(e.sec||"").split("\n").map(x=>x.trim()).filter(Boolean);
-function evCard(e){const me=cfg.sess.id,P=evPrep(e),pd=e.pd||{},c=h("div","card ev"),t=h("div","t"),hd=h("div","evh"),ti=h("div",null,(e.time?e.time+" · ":"")+e.text);ti.style.fontWeight="600";hd.append(ti);if(A.admin||e.whoId===me)hd.append(trashBtn(()=>{logA("Event gelöscht: "+String(e.text).slice(0,40));del("events",e.id)}));t.append(hd);
- if(P.length){const k=P.filter((_,i)=>pd[i]&&pd[i].t).length;t.append(h("div","hint","Vorbereitung "+k+"/"+P.length),prog(k,P.length));P.forEach((x,i)=>{const dn=pd[i]&&pd[i].t,r=h("div","pr"+(dn?" done":"")),b=h("button","chk",dn?"✓":"");b.setAttribute("aria-label","Erledigt");b.onclick=()=>{const n={...pd};if(n[i]&&n[i].t)delete n[i];else n[i]={n:cfg.name,t:Date.now()};patch("events",e.id,{pd:n})};r.append(b,h("span",null,x));t.append(r)})}
+/* ---- Kalender 2.0: Tag/Woche/Monat/Agenda, Serien, Schnelleingabe, Suche, Erinnerungen, ICS ---- */
+const EVK={event:["Event","#6366f1"],cater:["Catering","#d97706"],res:["Reservierung","#0891b2"],deliv:["Lieferung","#16a34a"],maint:["Wartung","#dc2626"],team:["Team","#9333ea"]},
+ REPL={"":"Einmalig",d:"Täglich",wd:"Werktags (Mo–Fr)",w:"Wöchentlich",m:"Monatlich",y:"Jährlich"},WDN=["So","Mo","Di","Mi","Do","Fr","Sa"],
+ REMO=[["","Keine Erinnerung"],["15","15 Min. vorher"],["30","30 Min. vorher"],["60","1 Std. vorher"],["120","2 Std. vorher"]],
+ CLD={ev:1,tk:1,sh:1,tm:0},cl=k=>{const c=cfg.cl||{};return c[k]===undefined?CLD[k]:c[k]},evCol=e=>(EVK[e.kind]||EVK.event)[1];
+const addD=(s,n)=>{const d=new Date(s+"T12:00");d.setDate(d.getDate()+n);return ymd(d)},wkSt=s=>addD(s,-((new Date(s+"T12:00").getDay()+6)%7)),
+ kw=s=>{const d=new Date(s+"T12:00"),t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return Math.ceil(((t-y)/864e5+1)/7)};
+const HC={};function holY(y){if(HC[y])return HC[y];const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),hh=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-hh-k)%7,m=Math.floor((a+11*hh+22*l)/451),mo=Math.floor((hh+l-7*m+114)/31),da=((hh+l-7*m+114)%31)+1,o=n=>ymd(new Date(y,mo-1,da+n,12)),M={};
+ M[y+"-01-01"]="Neujahr";M[o(-2)]="Karfreitag";M[o(1)]="Ostermontag";M[y+"-05-01"]="Tag der Arbeit";M[o(39)]="Christi Himmelfahrt";M[o(50)]="Pfingstmontag";M[y+"-10-03"]="Tag der Deutschen Einheit";M[y+"-12-25"]="1. Weihnachtstag";M[y+"-12-26"]="2. Weihnachtstag";return HC[y]=M}
+const hol=s=>holY(+s.slice(0,4))[s]||"";
+const evHit=(e,s)=>{if(!e.date||(e.ex||[]).includes(s))return false;if(e.date===s)return true;if(!e.rep||s<e.date||(e.until&&s>e.until))return false;const a=new Date(e.date+"T12:00"),b=new Date(s+"T12:00");
+ switch(e.rep){case"d":return true;case"wd":return b.getDay()>=1&&b.getDay()<=5;case"w":return Math.round((b-a)/864e5)%7===0;case"m":return a.getDate()===b.getDate();case"y":return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()}return false};
+const evOn=s=>off("events")?[]:data.events.filter(e=>evHit(e,s)).sort((a,b)=>(a.allday?"":a.time||"").localeCompare(b.allday?"":b.time||"")||(a.ts||0)-(b.ts||0));
+const evT=e=>e.allday||!e.time?"":e.time+(e.end?"–"+e.end:""),pdOf=(e,d)=>e.rep?((e.pdx||{})[d]||{}):(e.pd||{});
+const canEv=e=>!!A.admin||!e||e.whoId===cfg.sess.id;
+/* --- Schnelleingabe (Text → Termin/Aufgabe) --- */
+function nlp(raw,base){let t=" "+String(raw||"").trim()+" ";const o={},W=s=>new RegExp("(?<![\\wäöüß])(?:"+s+")(?![\\wäöüß])","i"),cut=re=>{const m=re.exec(t);if(!m)return null;t=t.slice(0,m.index)+" "+t.slice(m.index+m[0].length);return m};
+ const WN={montag:1,dienstag:2,mittwoch:3,donnerstag:4,freitag:5,samstag:6,sonntag:0,mo:1,di:2,mi:3,do:4,fr:5,sa:6,so:0},FULL="montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag",SH="mo|di|mi|do|fr|sa|so",td=today();let wd=null,m;
+ if(cut(/^\s*(?:aufgabe|todo|to-do|task)\s*[:\-]?\s*/i))o.task=1;
+ if(m=cut(W("jeden\\s+("+FULL+"|"+SH+")\\.?"))){o.rep="w";wd=WN[m[1].toLowerCase()]}
+ else if(cut(W("jede\\s+woche|w(?:ö|oe)chentlich")))o.rep="w";
+ else if(cut(W("t(?:ä|ae)glich|jeden\\s+tag")))o.rep="d";
+ else if(cut(W("werktags|montag\\s*(?:bis|-|–)\\s*freitag")))o.rep="wd";
+ else if(cut(W("monatlich|jeden\\s+monat")))o.rep="m";
+ else if(cut(W("j(?:ä|ae)hrlich|jedes\\s+jahr")))o.rep="y";
+ let dd=null;
+ if(cut(W("[üu]bermorgen|uebermorgen")))dd=addD(td,2);else if(cut(W("morgen")))dd=addD(td,1);else if(cut(W("heute")))dd=td;
+ else if(m=cut(/(\d{1,2})\.(\d{1,2})\.(\d{2,4})?(?!\d)/)){let y=m[3]?+m[3]:new Date().getFullYear();if(y<100)y+=2000;const s=y+"-"+z(+m[2])+"-"+z(+m[1]);if(!m[3]&&s<td)dd=(y+1)+"-"+z(+m[2])+"-"+z(+m[1]);else dd=s}
+ else if(m=cut(W("(?:am|n(?:ä|ae)chsten|kommenden)?\\s*("+FULL+")"))||cut(/(?<![\wäöüß.])(mo|di|mi|do|fr|sa|so)\.?(?=\s+\d)/i)){wd=WN[(m[1]||"").toLowerCase()]}
+ if(wd!==null&&!dd){const d0=new Date(td+"T12:00"),k=(wd-d0.getDay()+7)%7;dd=addD(td,m&&/n(?:ä|ae)chsten|kommenden/i.test(m[0])&&k===0?7:k)}
+ let tmv=null;
+ if(m=cut(/(?:von\s+)?(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|bis)\s*(\d{1,2})(?:[:.](\d{2}))?\s*uhr/i)||cut(/(?:von\s+)?(\d{1,2}):(\d{2})\s*(?:-|–|bis)\s*(\d{1,2})(?::(\d{2}))?/i)){const h1=+m[1],h2=+m[3];if(h1<24&&h2<=24){o.time=z(h1)+":"+(m[2]||"00");o.end=z(h2%24)+":"+(m[4]||"00")}}
+ else if(m=cut(/(?:um|ab|gegen)?\s*(\d{1,2})(?:[:.](\d{2}))?\s*uhr/i)||cut(/(?:um|ab|gegen)?\s*(\d{1,2}):(\d{2})/i)){if(+m[1]<24)o.time=z(+m[1])+":"+(m[2]||"00")}
+ else if(cut(W("mittags?")))o.time="12:00";else if(cut(W("abends?")))o.time="19:00";else if(cut(W("morgens|fr(?:ü|ue)h")))o.time="08:00";
+ if(cut(W("ganzt(?:ä|ae)gig|ganztags")))o.allday=1;
+ const low=t.toLowerCase();o.kind=/catering/.test(low)?"cater":/reservier|tisch f(?:ü|ue)r/.test(low)?"res":/liefer/.test(low)?"deliv":/wartung|reparatur|techniker/.test(low)?"maint":/team|besprechung|meeting|schulung/.test(low)?"team":"event";
+ let title=t.replace(/\s+/g," ").trim().replace(/^(?:(?:am|um|ab|von|bis|gegen|f(?:ü|ue)r)\s+)+/i,"").replace(/(?:\s+(?:am|um|ab|von|bis|gegen))+$/i,"").replace(/^[\s,:;\-–]+|[\s,:;\-–]+$/g,"");
+ o.text=title||(o.task?"":EVK[o.kind][0]);o.date=dd||base||td;if(o.rep&&!dd&&wd===null)o.date=base||td;return o}
+const nlpTxt=o=>(o.task?"Aufgabe":EVK[o.kind][0])+" · "+fmt(o.date,{weekday:"short",day:"numeric",month:"short"})+(o.allday?" · ganztägig":o.time?" · "+o.time+(o.end?"–"+o.end:""):"")+(o.rep?" · "+REPL[o.rep].toLowerCase():"");
+const evObj=f=>{const o={text:String(f.text||"").trim().slice(0,200),date:f.date,kind:f.kind||"event",who:cfg.name,whoId:cfg.sess.id,ts:Date.now()};if(f.allday)o.allday=true;else{if(f.time)o.time=f.time;if(f.time&&f.end)o.end=f.end}if(f.rep){o.rep=f.rep;if(f.until)o.until=f.until}if(f.rem&&f.time&&!f.allday)o.rem=f.rem;const pp=String(f.sec||"").split("\n").map(x=>x.trim()).filter(Boolean).join("\n");if(pp)o.sec=pp.slice(0,2000);return o};
+async function quickAdd(txt,base){const o=nlp(txt,base);if(!o.text&&!o.task)return toast("Bitte einen Text eingeben");if(o.task){if(!o.text)return toast("Bitte Text eingeben");const ok=await addTask(o.text,o.date);if(ok)toast("Aufgabe: "+fmt(o.date,{weekday:"short",day:"numeric",month:"short"}));return ok}
+ if(await put("events",evObj(o))){logA("Event: "+o.text.slice(0,40));toast("Gespeichert · "+nlpTxt(o));return true}return false}
+/* --- Termin-Dialog --- */
+function evModal(st){const ex=st.id?data.events.find(x=>x.id===st.id):null;if(st.id&&!ex){A.mdl=null;return h("div")}
+ const f=st.f||(st.f=ex?{text:ex.text||"",date:ex.date,allday:!!ex.allday,time:ex.time||"",end:ex.end||"",kind:ex.kind||"event",rep:ex.rep||"",until:ex.until||"",rem:ex.rem||"",sec:ex.sec||""}:{text:"",date:st.date||sel,allday:false,time:st.time||"",end:"",kind:"event",rep:"",until:"",rem:"",sec:""}),ro=!!ex&&!canEv(ex);
+ return modal(ex?(ro?"Termin":"Termin bearbeiten"):"Neuer Termin",s=>{s.style.cssText="display:grid;gap:10px;align-content:start";
+  const B=(el,k,ev)=>{el.value=f[k]||"";el.disabled=ro;el.addEventListener(ev||"input",()=>{f[k]=el.value});return el},L=(t,el)=>{const l=h("label","hint",t);l.style.cssText="display:grid;gap:4px";l.append(el);return l};
+  const ti=B(h("input"),"text");ti.placeholder="Titel (z. B. Catering Familie Meier)";ti.maxLength=200;s.append(ti);
+  const di=B(h("input"),"date","change");const ad=h("label","hint"),ac=h("input");ac.type="checkbox";ac.checked=!!f.allday;ac.disabled=ro;ad.style.cssText="display:flex;gap:8px;align-items:center";ad.append(ac,"Ganztägig");
+  const r1=h("div","row");r1.append(L("Datum",di));di.type="date";s.append(r1);s.append(ad);
+  const t1=B(h("input"),"time","change"),t2=B(h("input"),"time","change");t1.type="time";t2.type="time";const r2=h("div","row");r2.append(L("Von",t1),L("Bis",t2));s.append(r2);
+  const sync=()=>{r2.style.display=f.allday?"none":""};ac.onchange=()=>{f.allday=ac.checked;sync()};sync();
+  const sk=h("select");Object.keys(EVK).forEach(k=>{const o=h("option",null,EVK[k][0]);o.value=k;sk.append(o)});B(sk,"kind","change");
+  const sr=h("select");Object.keys(REPL).forEach(k=>{const o=h("option",null,REPL[k]);o.value=k;sr.append(o)});B(sr,"rep","change");
+  const un=B(h("input"),"until","change");un.type="date";const ur=L("Wiederholen bis (optional)",un);const sy=()=>{ur.style.display=f.rep?"":"none"};sr.addEventListener("change",sy);sy();
+  const rm=h("select");REMO.forEach(([k,l])=>{const o=h("option",null,l);o.value=k;rm.append(o)});B(rm,"rem","change");
+  const r3=h("div","row");r3.append(L("Art",sk),L("Wiederholung",sr));s.append(r3,ur,L("Erinnerung (solange die App offen ist)",rm));
+  const pr=B(h("textarea"),"sec");pr.placeholder="Vorbereitung (ein Punkt pro Zeile, optional)";pr.rows=3;s.append(pr);
+  if(ex&&ex.rep&&!ro)s.append(h("div","hint","Änderungen gelten für die ganze Serie."));
+  const bar=h("div","row");
+  if(!ro){const sv=h("button","fix",ex?"Speichern":"Termin anlegen");sv.onclick=async()=>{if(!String(f.text).trim())return toast("Bitte einen Titel eingeben");if(!f.date)return toast("Bitte ein Datum wählen");if(!f.allday&&f.time&&f.end&&tmin(f.end)<=tmin(f.time))return toast("Ende muss nach dem Beginn liegen");
+    const o=evObj(f);let ok;if(ex){const p={...o};delete p.who;delete p.whoId;delete p.ts;["allday","time","end","rep","until","rem","sec"].forEach(k=>{if(!(k in p))p[k]=null});p.text=o.text;ok=await patchN("events",ex.id,p)}else ok=await put("events",o);if(ok!==false){logA((ex?"Event geändert: ":"Event: ")+o.text.slice(0,40));A.mdl=null;render();toast("Gespeichert")}};bar.append(sv)}
+  if(ex){const du=h("button","alt","Duplizieren");du.onclick=()=>{A.mdl={t:"ev",id:"",f:{...f,rem:f.rem,until:""}};render()};bar.append(du)}
+  s.append(bar);
+  if(ex&&!ro){const dr=h("div","row");if(ex.rep){const b1=h("button","alt","Nur "+fmt(st.d||ex.date,{day:"numeric",month:"short"})+" löschen"),b2=h("button","alt","Ganze Serie löschen");
+    b1.onclick=()=>{if(!sure(b1,"Wirklich?"))return;patch("events",ex.id,{ex:[...(ex.ex||[]),st.d||ex.date]});A.mdl=null;render();toast("Termin gelöscht")};b2.onclick=()=>{if(!sure(b2,"Wirklich?"))return;logA("Serie gelöscht: "+String(ex.text).slice(0,40));del("events",ex.id);A.mdl=null;render()};dr.append(b1,b2)}
+   else{const b=h("button","alt","Löschen");b.onclick=()=>{if(!sure(b,"Wirklich löschen?"))return;logA("Event gelöscht: "+String(ex.text).slice(0,40));del("events",ex.id);A.mdl=null;render()};dr.append(b)}s.append(dr)}
+ })}
+const patchN=async(c,id,o)=>{try{if(cols[c])await cols[c].doc(id).update(o);else{data[c]=data[c].map(x=>x.id===id?{...x,...o}:x);render()}return true}catch(e){toast("Speichern nicht möglich");return false}};
+const openEv=(e,d)=>{A.mdl={t:"ev",id:e.id,d:d||e.date};render()},newEv=(date,time)=>{A.mdl={t:"ev",id:"",date,time};render()};
+function evCard(e,d){d=d||e.date;const me=cfg.sess.id,P=evPrep(e),pd=pdOf(e,d),c=h("div","card ev"),t=h("div","t"),hd=h("div","evh"),tl=evT(e),ti=h("div",null,(tl?tl+" · ":(e.allday?"Ganztägig · ":""))+e.text);ti.style.fontWeight="600";ti.style.cursor="pointer";ti.onclick=()=>openEv(e,d);c.style.borderLeft="4px solid "+evCol(e);hd.append(ti);
+ const ed=h("button","alt",canEv(e)?"Ändern":"Details");ed.style.cssText="white-space:nowrap;padding:6px 12px;flex:none";ed.onclick=()=>openEv(e,d);hd.append(ed);if(canEv(e)&&!e.rep)hd.append(trashBtn(()=>{logA("Event gelöscht: "+String(e.text).slice(0,40));del("events",e.id)}));t.append(hd);
+ t.append(h("div","hint",EVK[e.kind||"event"][0]+(e.rep?" · ↻ "+REPL[e.rep].toLowerCase():"")+(e.rem?" · ⏰ "+e.rem+" Min.":"")));
+ if(P.length){const k=P.filter((_,i)=>pd[i]&&pd[i].t).length;t.append(h("div","hint","Vorbereitung "+k+"/"+P.length),prog(k,P.length));P.forEach((x,i)=>{const dn=pd[i]&&pd[i].t,r=h("div","pr"+(dn?" done":"")),b=h("button","chk",dn?"✓":"");b.setAttribute("aria-label","Erledigt");b.onclick=()=>{const n={...pd};if(n[i]&&n[i].t)delete n[i];else n[i]={n:cfg.name,t:Date.now()};patch("events",e.id,e.rep?{pdx:{...(e.pdx||{}),[d]:n}}:{pd:n})};r.append(b,h("span",null,x));t.append(r)})}
  t.append(h("div","hint",(e.who||"")+(e.ts?" · "+tm(e.ts):"")));c.append(t);return c}
-const wkOff=s=>{const md=x=>{const d=new Date(x+"T12:00");return new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7)).getTime()};return Math.round((md(s)-md(today()))/(7*864e5))};
-function vCal(v){v.append(hero("Kalender","Aufgaben, Events und Schichten an einem Ort"));const me=cfg.sess.id,view=A.cv||"month",ch=h("div","chips nv");
- [["month","Monat"],["agenda","Agenda"]].forEach(([k,l])=>{const b=h("button","alt"+(view===k?" on":""),l);b.onclick=()=>{A.cv=k;render()};ch.append(b)});v.append(ch);if(view==="agenda")return calAgenda(v);
- const wrap=h("div","calw"),L=h("div","calm"),R=h("div","calr"),mh=h("div","mh"),p=h("button","alt","‹"),n=h("button","alt","›"),tdb=h("button","alt","Heute");p.setAttribute("aria-label","Vormonat");n.setAttribute("aria-label","Nächster Monat");
- p.onclick=()=>{mon.setMonth(mon.getMonth()-1);render()};n.onclick=()=>{mon.setMonth(mon.getMonth()+1);render()};tdb.onclick=()=>{sel=today();mon=new Date();mon.setDate(1);render()};tdb.style.padding="4px 12px";
- mh.append(p,h("span",null,mon.toLocaleDateString("de-DE",{month:"long",year:"numeric"})),tdb,n);L.append(mh);
+/* --- Kopf: Schnelleingabe, Ansichten, Ebenen --- */
+function calHead(v){const me=cfg.sess.id,view=A.cv||"month";
+ const qa=h("div","qa"),r=h("div","row"),i=h("input"),b=h("button","fix","＋"),pv=h("div","hint");i.placeholder="Schnell eintragen: Catering Fr 14–18 Uhr · Aufgabe morgen Bestellung · jeden Montag 8 Uhr Lieferung";i.maxLength=200;i.setAttribute("aria-label","Schnelleingabe");
+ const upd=()=>{const t=i.value.trim();if(!t){pv.textContent="Tipp: „Catering Fr 14–18 Uhr“, „Aufgabe morgen Milch bestellen“, „jeden Montag 8 Uhr Lieferung“";return}try{const o=nlp(t,sel);pv.textContent="→ "+nlpTxt(o)+(o.text?" · „"+o.text+"“":"")}catch(e){pv.textContent=""}};
+ i.oninput=upd;upd();const go=async()=>{if(!i.value.trim())return;if(await quickAdd(i.value,sel)){i.value="";render()}};b.onclick=go;i.onkeydown=e=>{if(e.key==="Enter")go()};r.append(i,b);qa.append(r,pv);v.append(qa);
+ const ch=h("div","chips nv");[["day","Tag"],["week","Woche"],["month","Monat"],["agenda","Agenda"]].forEach(([k,l])=>{const x=h("button","alt"+(view===k&&!A.cs?" on":""),l);x.onclick=()=>{A.cv=k;A.cs=false;cfg.cvw=k;save();render()};ch.append(x)});
+ const sb=h("button","alt"+(A.cs?" on":""),"🔍");sb.setAttribute("aria-label","Suchen");sb.onclick=()=>{A.cs=!A.cs;render()};ch.append(sb);
+ const nb=h("button","alt","＋ Termin");nb.onclick=()=>newEv(sel);ch.append(nb);v.append(ch);
+ const ly=h("div","chips");[["ev","Events"],["tk","Aufgaben"],["sh","Meine Schicht"],["tm","Team"]].forEach(([k,l])=>{if(k==="sh"&&off("plan"))return;if(k==="tm"&&off("plan"))return;const x=h("button","alt"+(cl(k)?" on":""),l);x.setAttribute("aria-pressed",cl(k)?"true":"false");x.onclick=()=>{cfg.cl={...(cfg.cl||{}),[k]:cl(k)?0:1};save();render()};ly.append(x)});v.append(ly)}
+function calNav(v,title,step,sub){const mh=h("div","mh"),p=h("button","alt","‹"),n=h("button","alt","›"),tdb=h("button","alt","Heute"),mid=h("div"),tt=h("span",null,title);p.setAttribute("aria-label","Zurück");n.setAttribute("aria-label","Weiter");tdb.style.padding="4px 12px";
+ const go=k=>{step(k);mon=new Date(sel+"T12:00");mon.setDate(1);render()};p.onclick=()=>go(-1);n.onclick=()=>go(1);tdb.onclick=()=>{sel=today();mon=new Date();mon.setDate(1);render()};mid.style.cssText="text-align:center;flex:1";mid.append(tt);if(sub){const sm=h("div","hint",sub);mid.append(sm)}mh.append(p,mid,tdb,n);v.append(mh)}
+function swipe(el,step){let x0=0,y0=0;el.addEventListener("touchstart",e=>{const t=e.touches[0];x0=t.clientX;y0=t.clientY},{passive:true});el.addEventListener("touchend",e=>{const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)>70&&Math.abs(dy)<45&&(!el.scrollLeft||el.classList.contains("noscroll")))step(dx<0?1:-1)},{passive:true})}
+/* --- Zeitraster (Tag/Woche) --- */
+function calItems(s){const me=cfg.sess.id,all=[],tl=[],H=hol(s);if(H)all.push({k:"hol",t:"🎌 "+H});
+ if(cl("ev"))evOn(s).forEach(e=>{if(e.allday||!e.time)all.push({k:"ev",e,t:e.text,c:evCol(e)});else{const a=tmin(e.time),b=e.end?tmin(e.end):a+60;tl.push({k:"ev",e,t:e.text,c:evCol(e),a,b:b>a?b:a+30,sub:evT(e)})}});
+ if(cl("tk"))data.tasks.filter(t=>t.date===s).forEach(t=>all.push({k:"tk",tk:t,t:t.text}));
+ if(!off("plan")){data.plan.filter(q=>q.date===s&&((q.uid===me&&cl("sh"))||(q.uid!==me&&cl("tm")))).forEach(q=>{const a=tmin(q.from),b=tmin(q.to);tl.push({k:"sh",q,s,t:(q.uid===me?"Deine Schicht":q.name),c:q.uid===me?"var(--ac)":"#64748b",a,b:b>a?b:1440,sub:q.from+"–"+q.to})});
+  if(cl("tm"))data.offs.filter(o=>o.date===s&&o.status==="ok").forEach(o=>all.push({k:"off",t:"frei: "+o.name}))}
+ return{all,tl}}
+function lanes(it){it.sort((a,b)=>a.a-b.a||b.b-a.b);let cl_=[],end=0,grp=[];const fin=()=>{const n=Math.max(1,...grp.map(x=>x.k+1));grp.forEach(x=>x.n=n);grp=[];cl_=[]};it.forEach(x=>{if(x.a>=end&&grp.length)fin();let k=0;while(cl_[k]!==undefined&&cl_[k]>x.a)k++;cl_[k]=x.b;x.k=k;grp.push(x);end=Math.max(end,x.b)});if(grp.length)fin()}
+function calGrid(v,days){const HP=44,td=today(),me=cfg.sess.id,D=days.map(s=>({s,...calItems(s)}));let lo=6,hi=22;D.forEach(d=>d.tl.forEach(x=>{lo=Math.min(lo,Math.floor(x.a/60));hi=Math.max(hi,Math.ceil(x.b/60))}));lo=Math.max(0,lo);hi=Math.min(24,Math.max(hi,lo+4));
+ const wrap=h("div","tgw"),box=h("div","tg"),n=days.length;wrap.classList.toggle("noscroll",n===1);box.style.gridTemplateColumns="38px repeat("+n+",minmax("+(n>1?"92px":"0")+",1fr))";
+ box.append(h("div","tgh"));D.forEach(d=>{const dt=new Date(d.s+"T12:00"),b=h("button","tgh"+(d.s===td?" td":""));b.append(h("small",null,WDN[dt.getDay()]),h("b",null,String(dt.getDate())));b.setAttribute("aria-label",fmt(d.s,{weekday:"long",day:"numeric",month:"long"}));b.onclick=()=>{sel=d.s;mon=new Date(d.s+"T12:00");mon.setDate(1);A.cv="day";render()};box.append(b)});
+ box.append(h("div","tga"));D.forEach(d=>{const c=h("div","tga");d.all.forEach(it=>{const x=h(it.k==="hol"||it.k==="off"?"div":"button","tgp"+(it.k==="tk"&&it.tk.done?" done":""),(it.k==="tk"?(it.tk.done?"✓ ":"☐ "):"")+it.t);if(it.c){x.style.borderLeftColor=it.c;if(/^#/.test(it.c))x.style.background=it.c+"2e"}if(it.k==="ev")x.onclick=()=>openEv(it.e,d.s);if(it.k==="tk")x.onclick=()=>markDone("tasks",it.tk);c.append(x)});box.append(c)});
+ const g=h("div","tgg");g.style.height=((hi-lo)*HP)+"px";for(let k=lo;k<hi;k++){const sp=h("span",null,z(k)+":00");sp.style.top=((k-lo)*HP+(k===lo?7:0))+"px";g.append(sp)}box.append(g);
+ D.forEach(d=>{const c=h("div","tgc");c.style.height=((hi-lo)*HP)+"px";lanes(d.tl);d.tl.forEach(it=>{const b=h("button","tgi"+(it.k==="sh"?" sh":""));b.style.cssText="top:"+((it.a-lo*60)*HP/60)+"px;height:"+Math.max(20,(it.b-it.a)*HP/60-1)+"px;left:calc("+(it.k/it.n*100)+"% + 1px);width:calc("+(100/it.n)+"% - 2px);border-left-color:"+it.c+(/^#/.test(it.c)?";background:"+it.c+"2e":"")+";";b.append(h("b",null,it.t),h("small",null,it.sub));
+   b.onclick=ev=>{ev.stopPropagation();if(it.k==="ev")openEv(it.e,d.s);else{A.osub="plan";A.pw=wkOff(d.s);A.pd=d.s;A.pv="day";goTab("ops")}};c.append(b)});
+  if(d.s===td){const nw=new Date(),m=nw.getHours()*60+nw.getMinutes();if(m>=lo*60&&m<hi*60){const ln=h("div","tgn");ln.style.top=((m-lo*60)*HP/60)+"px";c.append(ln)}}
+  c.onclick=ev=>{if(ev.target!==c)return;const y=ev.clientY-c.getBoundingClientRect().top,m=Math.max(0,Math.min(1410,Math.round((lo*60+y/HP*60)/30)*30));newEv(d.s,z(Math.floor(m/60))+":"+z(m%60))};box.append(c)});
+ wrap.append(box);v.append(wrap);v.append(h("div","hint cal-l","Auf eine freie Stelle tippen = neuer Termin · ☐ Aufgabe antippen = erledigt"));return wrap}
+/* --- Ansichten --- */
+function calSearch(v){const q=h("input");q.placeholder="Suchen in Events und Aufgaben …";q.value=A.cq||"";q.setAttribute("aria-label","Suchen");q.oninput=()=>{A.cq=q.value;clearTimeout(A.cqt);A.cqt=setTimeout(()=>{render();const x=document.querySelector("#v input[aria-label=Suchen]");if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length)}},250)};v.append(q);
+ const s=(A.cq||"").trim().toLowerCase();if(!s){v.append(h("div","hint","Tippe, um Events, Vorbereitungen und Aufgaben zu durchsuchen."));return}
+ const E=off("events")?[]:data.events.filter(e=>(String(e.text)+" "+String(e.sec||"")+" "+EVK[e.kind||"event"][0]).toLowerCase().includes(s)).sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,40),T=data.tasks.filter(t=>String(t.text).toLowerCase().includes(s)).sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,40);
+ if(!E.length&&!T.length)v.append(h("div","empty","Nichts gefunden"));if(E.length){v.append(h("h2",null,"Events ("+E.length+")"));E.forEach(e=>{const c=evCard(e,e.date),dh=h("div","hint",fmt(e.date,{weekday:"short",day:"numeric",month:"long",year:"numeric"}));c.querySelector(".t").prepend(dh);v.append(c)})}
+ if(T.length){v.append(h("h2",null,"Aufgaben ("+T.length+")"));T.forEach(t=>{const c=taskRow(t);c.querySelector(".t").prepend(h("div","hint",fmt(t.date,{weekday:"short",day:"numeric",month:"long"})));v.append(c)})}}
+function calDay(v){calNav(v,fmt(sel,{weekday:"long",day:"numeric",month:"long"}),k=>{sel=addD(sel,k)},"KW "+kw(sel)+(hol(sel)?" · "+hol(sel):""));const w=calGrid(v,[sel]);swipe(w,k=>{sel=addD(sel,k);mon=new Date(sel+"T12:00");mon.setDate(1);render()})}
+function calWeek(v){const a=wkSt(sel),b=addD(a,6);calNav(v,fmt(a,{day:"numeric",month:"short"})+" – "+fmt(b,{day:"numeric",month:"short"}),k=>{sel=addD(sel,7*k)},"KW "+kw(a));calGrid(v,[0,1,2,3,4,5,6].map(i=>addD(a,i)))}
+function calMonth(v){const me=cfg.sess.id,wrap=h("div","calw"),L=h("div","calm"),R=h("div","calr");
+ calNav(L,mon.toLocaleDateString("de-DE",{month:"long",year:"numeric"}),k=>{mon=new Date(mon.getFullYear(),mon.getMonth()+k,1);sel=ymd(new Date(mon.getFullYear(),mon.getMonth(),Math.min(+sel.slice(8,10),new Date(mon.getFullYear(),mon.getMonth()+1,0).getDate())))});
  const g=h("div","grid");["Mo","Di","Mi","Do","Fr","Sa","So"].forEach(d=>g.append(h("b",null,d)));const offs=(mon.getDay()+6)%7,dim=new Date(mon.getFullYear(),mon.getMonth()+1,0).getDate();for(let i=0;i<offs;i++)g.append(h("span"));
- for(let d=1;d<=dim;d++){const s=ymd(new Date(mon.getFullYear(),mon.getMonth(),d)),b=h("button","day"+(s===sel?" sel":"")+(s===today()?" td":""),String(d)),tk=data.tasks.some(t=>t.date===s&&!t.done),ev=!off("events")&&data.events.some(e=>e.date===s),sh=!off("plan")&&data.plan.some(q=>q.uid===me&&q.date===s);
-  if(tk||ev||sh){const dd=h("em","dd");if(tk)dd.append(h("i","t"));if(ev)dd.append(h("i","e"));if(sh)dd.append(h("i","s"));b.append(dd)}b.setAttribute("aria-label",fmt(s,{weekday:"long",day:"numeric",month:"long"}));b.onclick=()=>{sel=s;render()};g.append(b)}
- L.append(g,h("div","hint cal-l","● Aufgabe · ◆ Event · ▬ meine Schicht"));
- R.append(h("h2",null,fmt(sel,{weekday:"long",day:"numeric",month:"long"})));
- if(!off("events")){R.append(h("div","sub2","Events & Termine"));const E=data.events.filter(e=>e.date===sel).sort((a,b)=>(a.time||"").localeCompare(b.time||""));if(!E.length)R.append(h("div","hint","Keine Events an diesem Tag"));E.forEach(e=>R.append(evCard(e)));
-  const f=h("div","evf"),ti=h("input"),tt=h("input"),pr=h("textarea"),bt=h("button","alt","＋ Event speichern"),r=h("div","row");ti.placeholder="Event / Termin / Reservierung …";tt.type="time";tt.setAttribute("aria-label","Uhrzeit");tt.style.flex="0 0 110px";pr.placeholder="Vorbereitung (ein Punkt pro Zeile, optional)";pr.rows=3;r.append(ti,tt);
-  bt.onclick=async()=>{const t=ti.value.trim();if(!t)return toast("Bitte einen Titel eingeben");const o={text:t,date:sel,who:cfg.name,whoId:me,ts:Date.now()};if(tt.value)o.time=tt.value;const pp=pr.value.split("\n").map(x=>x.trim()).filter(Boolean).join("\n");if(pp)o.sec=pp;if(await put("events",o)){logA("Event: "+t.slice(0,40));toast("Event gespeichert")}};f.append(r,pr,bt);bt.style.marginTop="8px";R.append(f)}
+ for(let d=1;d<=dim;d++){const s=ymd(new Date(mon.getFullYear(),mon.getMonth(),d)),b=h("button","day"+(s===sel?" sel":"")+(s===today()?" td":"")+(hol(s)?" hl":""),String(d)),tk=cl("tk")&&data.tasks.some(t=>t.date===s&&!t.done),E=cl("ev")?evOn(s):[],sh=!off("plan")&&data.plan.some(q=>s===q.date&&((q.uid===me&&cl("sh"))||(q.uid!==me&&cl("tm"))));
+  if(tk||E.length||sh){const dd=h("em","dd");if(tk)dd.append(h("i","t"));if(E.length){const i=h("i","e");i.style.background=evCol(E[0]);dd.append(i)}if(sh)dd.append(h("i","s"));b.append(dd)}b.setAttribute("aria-label",fmt(s,{weekday:"long",day:"numeric",month:"long"})+(hol(s)?", "+hol(s):""));b.onclick=()=>{sel=s;render()};b.ondblclick=()=>{A.cv="day";render()};g.append(b)}
+ L.append(g,h("div","hint cal-l","● Aufgabe · ◆ Event (Farbe = Art) · ▬ Schicht · unterstrichen = Feiertag"));swipe(L,k=>{mon=new Date(mon.getFullYear(),mon.getMonth()+k,1);sel=ymd(mon);render()});
+ R.append(h("h2",null,fmt(sel,{weekday:"long",day:"numeric",month:"long"})));if(hol(sel))R.append(h("div","hint","🎌 "+hol(sel)+" · KW "+kw(sel)));else R.append(h("div","hint","KW "+kw(sel)));
+ const tb=h("div","row"),b1=h("button","alt","Tagesansicht"),b2=h("button","alt","Wochenansicht");b1.onclick=()=>{A.cv="day";render()};b2.onclick=()=>{A.cv="week";render()};tb.append(b1,b2);R.append(tb);
+ if(!off("events")){R.append(h("div","sub2","Events & Termine"));const E=evOn(sel);if(!E.length)R.append(h("div","hint","Keine Events an diesem Tag"));E.forEach(e=>R.append(evCard(e,sel)));const nb=h("button","alt","＋ Termin an diesem Tag");nb.onclick=()=>newEv(sel);R.append(nb)}
  R.append(h("div","sub2","Aufgaben"));R.append(addBox("Aufgabe für diesen Tag…",x=>addTask(x,sel)));const T=data.tasks.filter(t=>t.date===sel);if(!T.length)R.append(h("div","hint","Keine Aufgaben an diesem Tag"));T.forEach(t=>R.append(taskRow(t)));
  if(!off("plan")){R.append(h("div","sub2","Schichten"));const P=data.plan.filter(q=>q.date===sel).sort((a,b)=>tmin(a.from)-tmin(b.from)),O=data.offs.filter(o=>o.date===sel&&o.status==="ok");if(!P.length)R.append(h("div","hint","Keine Schichten eingetragen"));
   P.forEach(q=>R.append(h("div",q.uid===me?"":"hint",(q.uid===me?"Du":q.name)+" · "+q.from+"–"+q.to+(q.swapBy?" · Tausch gesucht":""))));O.forEach(o=>R.append(h("div","hint","frei: "+o.name)));
   const zb=h("button","alt","Zum Dienstplan");zb.style.marginTop="8px";zb.onclick=()=>{A.osub="plan";A.pw=wkOff(sel);A.pd=sel;A.pv="day";goTab("ops")};R.append(zb)}
  wrap.append(L,R);v.append(wrap)}
-function calAgenda(v){const td=today(),me=cfg.sess.id;let any=0;const ov=data.tasks.filter(t=>t.date<td&&!t.done);if(ov.length){v.append(h("h2",null,"Überfällig"));ov.forEach(t=>v.append(taskRow(t)))}
- for(let i=0;i<30;i++){const s=addDays(i),E=off("events")?[]:data.events.filter(e=>e.date===s).sort((a,b)=>(a.time||"").localeCompare(b.time||"")),T=data.tasks.filter(t=>t.date===s),P=off("plan")?[]:data.plan.filter(p=>p.uid===me&&p.date===s);if(!E.length&&!T.length&&!P.length)continue;any=1;
+function calAgenda(v){const td=today(),me=cfg.sess.id,N=A.agn||30;let any=0;const ov=cl("tk")?data.tasks.filter(t=>t.date<td&&!t.done):[];if(ov.length){v.append(h("h2",null,"Überfällig"));ov.forEach(t=>v.append(taskRow(t)))}
+ for(let i=0;i<N;i++){const s=addDays(i),E=cl("ev")?evOn(s):[],T=cl("tk")?data.tasks.filter(t=>t.date===s):[],P=off("plan")?[]:data.plan.filter(p=>p.date===s&&((p.uid===me&&cl("sh"))||(p.uid!==me&&cl("tm")))),H=hol(s);if(!E.length&&!T.length&&!P.length&&!H)continue;any=1;
   const hd=h("h2",null,(s===td?"Heute · ":s===addDays(1)?"Morgen · ":"")+fmt(s,{weekday:"long",day:"numeric",month:"long"}));hd.style.cursor="pointer";hd.title="Im Monat öffnen";hd.onclick=()=>{sel=s;mon=new Date(s+"T12:00");mon.setDate(1);A.cv="month";render()};v.append(hd);
-  P.forEach(p=>v.append(h("div","hint","Deine Schicht "+p.from+"–"+p.to)));E.forEach(e=>v.append(evCard(e)));T.forEach(t=>v.append(taskRow(t)))}
- if(!any)v.append(h("div","empty","In den nächsten 30 Tagen ist nichts geplant"))}
+  if(H)v.append(h("div","hint","🎌 "+H));P.forEach(p=>v.append(h("div","hint",(p.uid===me?"Deine Schicht ":p.name+" · ")+p.from+"–"+p.to)));E.forEach(e=>v.append(evCard(e,s)));T.forEach(t=>v.append(taskRow(t)))}
+ if(!any)v.append(h("div","empty","In den nächsten "+N+" Tagen ist nichts geplant"));if(N<180){const m=h("button","alt","Weitere 30 Tage");m.onclick=()=>{A.agn=N+30;render()};v.append(m)}}
+/* --- ICS-Export & Erinnerungen --- */
+function icsText(){const esc=s=>String(s||"").replace(/\\/g,"\\\\").replace(/;/g,"\;").replace(/,/g,"\\,").replace(/\n/g,"\\n"),D=s=>s.replace(/-/g,""),T=(s,t)=>D(s)+"T"+t.replace(":","")+"00",L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Team-Board//DE","CALSCALE:GREGORIAN","X-WR-CALNAME:Team-Board"];
+ data.events.forEach(e=>{if(!e.date)return;L.push("BEGIN:VEVENT","UID:"+e.id+"@teamboard","DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z");
+  if(e.allday||!e.time){L.push("DTSTART;VALUE=DATE:"+D(e.date),"DTEND;VALUE=DATE:"+D(addD(e.date,1)))}else{const en=e.end||z(Math.min(23,+e.time.slice(0,2)+1))+":"+e.time.slice(3,5);L.push("DTSTART:"+T(e.date,e.time),"DTEND:"+T(e.date,en))}
+  if(e.rep){const R={d:"FREQ=DAILY",wd:"FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR",w:"FREQ=WEEKLY",m:"FREQ=MONTHLY",y:"FREQ=YEARLY"}[e.rep];L.push("RRULE:"+R+(e.until?";UNTIL="+D(e.until)+(e.allday||!e.time?"":"T235959"):""));(e.ex||[]).forEach(x=>L.push(e.allday||!e.time?"EXDATE;VALUE=DATE:"+D(x):"EXDATE:"+T(x,e.time)))}
+  L.push("SUMMARY:"+esc(e.text),"CATEGORIES:"+esc(EVK[e.kind||"event"][0]));if(e.sec)L.push("DESCRIPTION:"+esc(e.sec));L.push("END:VEVENT")});
+ L.push("END:VCALENDAR");return L.join("\r\n")}
+function icsExport(){const txt=icsText(),fn="Team-Board-Kalender.ics";try{if(window.AndroidBridge&&AndroidBridge.saveFile){AndroidBridge.saveFile(fn,txt);return toast("Kalender-Datei gespeichert")}}catch(e){}
+ Promise.resolve().then(()=>claude.use("downloads")).then(d=>{if(!d)throw{code:"unavailable"};return d.save({filename:fn,data:txt})}).then(()=>toast("Kalender-Datei gespeichert"),()=>{try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/calendar"}));a.download=fn;document.body.append(a);a.click();a.remove()}catch(e){toast("Speichern hier nicht möglich")}})}
+function remTick(){try{if(!A.ok||off("events"))return;const n=new Date(),td=ymd(n),nm=n.getHours()*60+n.getMinutes();evOn(td).forEach(e=>{if(!e.rem||!e.time||e.allday)return;const st=tmin(e.time);if(nm>=st-(+e.rem)&&nm<st){const k="rm_"+e.id+td;let seen=0;try{seen=localStorage.getItem(k)}catch(x){}if(seen)return;try{localStorage.setItem(k,"1")}catch(x){}toast("⏰ "+e.time+" · "+e.text);try{navigator.vibrate&&navigator.vibrate(250)}catch(x){}}})}catch(e){}}
+setInterval(remTick,30000);
+function vCal(v){v.append(hero("Kalender","Termine, Aufgaben und Schichten – Tag, Woche, Monat"));if(!A.cv)A.cv=cfg.cvw||"month";const view=A.cv;calHead(v);
+ if(A.cs)calSearch(v);else if(view==="day")calDay(v);else if(view==="week")calWeek(v);else if(view==="agenda")calAgenda(v);else calMonth(v);
+ const ft=h("div","row");ft.style.marginTop="14px";const ex=h("button","alt","Kalender exportieren (.ics)");ex.onclick=icsExport;ft.append(ex);v.append(ft);
+ if(A.mdl&&A.mdl.t==="ev")v.append(evModal(A.mdl))}
+
+const wkOff=s=>{const md=x=>{const d=new Date(x+"T12:00");return new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7)).getTime()};return Math.round((md(s)-md(today()))/(7*864e5))};
 
 function vNotes(v){v.append(hero("Team-Notizen","Was die anderen für euch hinterlassen haben"));
  {const td=today(),T=data.tasks.filter(t=>t.date<=td&&(t.date===td||!t.done)).sort((x,y)=>(x.done?1:0)-(y.done?1:0)||x.date.localeCompare(y.date));
